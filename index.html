@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruby Acessórios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <link rel="shortcut icon" href="imagens/icones/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="top-taxa">
+            <p>HORÁRIO DE ENTREGA: 08:00 ÀS 11:00 E 14:00 ÀS 18:00 - TAXA DE FRETE PARA TODOS OS LUGARES: R$ 5,00</p> 
+        </div>
+
+        <div class="top-logo-container">
+            <div class="logo">
+                <img src="imagens/icones/logo.png" alt="logo">
+            </div>
+            <div class="conteiner-actions">
+                <div class="conteiner-busca">
+                    <input type="text" class="caixa-de-busca" placeholder="Buscar Produto...">
+                    <button class="botao-lupa">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                <a href="https://maps.app.goo.gl/GcvZe7tiLbTTjmbR6?g_st=ic">
+                    <img src="imagens/icones/localização-icon.png" alt="localização" class="icon-localização">
+                </a>
+                <img src="imagens/icones/sacola-icon.png" alt="sacola" class="icon-sacola" id="openModal">
+            </div>
+
+             <!-- Modal -->
+             <div id="Modal" class="modal-sacola">
+                <div class="modal-conteudo">
+                  <span class="botao-close" id="closeModal">&times;</span>
+                  <p>Conteúdo do Modal</p>
+
+                  <div class="botoes-conteiner">
+                    <button class="botao-finalizar">Finalizar Compra</button>
+                    <button class="botao-esvaziar" >Esvaziar Sacola</button>
+                  </div>
+
+                </div>
+            </div>
+
+    </div>
+
+        </div>
+
+        <nav class="navbar">
+            <ul class="menu">
+                <li class="menu-itens"><a href="#" class="menu-link">HOME</a></li>
+                <li class="menu-itens"><a href="#" class="menu-link">BRINCOS</a></li>
+                <li class="menu-itens"><a href="#" class="menu-link">BRACELETES</a></li>
+                <li class="menu-itens"><a href="#" class="menu-link">PULSEIRAS</a></li>
+                <li class="menu-itens"><a href="#" class="menu-link">COLARES</a></li>
+                <li class="menu-itens"><a href="#" class="menu-link">ANÉIS</a></li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <main>
+        <a href="https://api.whatsapp.com/send?phone=559996418464" target="_blank"      class="whatsapp-icon">
+            <img src="imagens/icones/whatsapp-icon.png" alt="WhatsApp">
+        </a>
+
+        <h1 class="titulo">O F E R T A S</h1>
+            
+        <div class="conteiner-cards">
+            <div class="card">
+                <img src="imagens/produtos/joia/joia.png" alt="" srcset="" >
+                <h3>PRODUTO</h3>
+                <p>descrição do produto</p>
+                <p style="font-weight: 600;">R$<span>10.50</span></p>
+                <button>ADICIONAR</button>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <!-- Redes -->
+            <div class="footer-section">
+                <h3>Redes</h3>
+                <ul>
+                    <li><a href="https://www.instagram.com/studio_alverlyaguiar" target="_blank">Instagram</a></li>
+                </ul>
+            </div>
+        
+            <!-- Localização -->
+            <div class="footer-section">
+                <h3>Localização</h3>
+                <ul>
+                    <li><a href="https://maps.app.goo.gl/GcvZe7tiLbTTjmbR6?g_st=ic" target="_blank">Avenida Santos Dumont, 692 - Centro / Caxias - MA</a></li>
+                </ul>
+            </div>
+        
+            <!-- Contato -->
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <ul>
+                    <li>Telefone: (99) 99641-8464</li>
+                    <li>E-mail: alverlioliveira@outlook.com</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Linha divisória e copyright -->
+        <hr class="footer-divider">
+        <p class="footer-copyright">Copyright &copy; 2025 Ruby Acessórios. Todos os direitos reservados.</p>
+    </footer>
+    
+    <script src="js/script.js"></script>
+</body>
+</html>
