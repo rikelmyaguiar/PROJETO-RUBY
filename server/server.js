@@ -1,14 +1,17 @@
+const express = require('express');
 const mysql = require('mysql2');
+const app = express();
+const port = 3000;
 
-// Configurações do banco de dados
+// Configuração do banco de dados
 const connection = mysql.createConnection({
-    host: 'localhost',     // Endereço do servidor
-    user: 'root',          // Usuário do MySQL
-    password: '',          // Senha do MySQL
-    database: 'loja_ruby', // Nome do banco de dados
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'loja_ruby',
 });
 
-// Conecta ao banco de dados
+// Conectar ao banco de dados
 connection.connect((err) => {
     if (err) {
         console.error('Erro ao conectar ao banco de dados:', err.message);
@@ -17,4 +20,21 @@ connection.connect((err) => {
     console.log('Conexão com o banco de dados realizada com sucesso!');
 });
 
-module.exports = connection;
+// Definir uma rota para recuperar os produtos
+app.get('/produtos', (req, res) => {
+    const query = 'SELECT * FROM produtos'; // Certifique-se de que a tabela e os campos estão corretos
+    connection.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).send('Erro ao recuperar os produtos');
+        }
+        res.json(results); // Envia os produtos como JSON
+    });
+});
+
+// Servir arquivos estáticos (como HTML, CSS e JS)
+app.use(express.static('public'));
+
+// Iniciar o servidor
+app.listen(port, () => {
+    console.log(`Servidor rodando em http://localhost:${port}`);
+});
