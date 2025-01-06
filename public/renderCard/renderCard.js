@@ -1,45 +1,49 @@
-// Função para carregar produtos dinamicamente
-async function carregarProdutos() {
-  try {
-    const response = await fetch("/produtos");
-    const produtos = await response.json(); // Obtém os produtos do servidor
+        // Função para carregar os produtos de uma categoria
+        async function carregarProdutos(categoria) {
+          try {
+              const response = await fetch(`http://localhost:3000/produtos/${categoria}`);
+              if (!response.ok) {
+                  throw new Error('Erro ao carregar produtos');
+              }
 
-    const container = document.getElementById("cards-conteiner");
-    container.innerHTML = ""; // Limpa o conteúdo antigo
+              const produtos = await response.json();
+              const container = document.getElementById(`cards-conteiner-${categoria}`);
+              container.innerHTML = '';
 
-    produtos.forEach((produto) => {
-      // Cria um card para cada produto
-      const card = document.createElement("div");
-      card.classList.add("card");
+              produtos.forEach(produto => {
+                  const card = document.createElement('div');
+                  card.classList.add('card');
 
-      // Adiciona a imagem do produto
-      const imagem = document.createElement("img");
-      imagem.src = produto.foto; // Supondo que o campo da imagem se chama imagem_url
-      imagem.alt = produto.nome;
-      card.appendChild(imagem);
+                  const img = document.createElement('img');
+                  img.src = 'imagens/produtos/joia/joia.png'; // Usando uma imagem fixa
+                  img.alt = produto.nome;
 
-      // Adiciona o nome do produto
-      const nome = document.createElement("h3");
-      nome.textContent = produto.nome;
-      card.appendChild(nome);
+                  const nome = document.createElement('h3');
+                  nome.textContent = produto.nome;
 
-      // Adiciona o preço do produto
-      const preco = document.createElement("p");
-      preco.innerHTML = `R$<span>${produto.preco}</span>`; // Supondo que o campo do preço se chama preco
-      card.appendChild(preco);
+                  const preco = document.createElement('p');
+                  preco.innerHTML = `R$ <span>${produto.preco}</span>`;
 
-      // Adiciona o botão de adicionar ao carrinho
-      const botao = document.createElement("button");
-      botao.textContent = "ADICIONAR";
-      card.appendChild(botao);
+                  const button = document.createElement('button');
+                  button.textContent = 'ADICIONAR';
 
-      // Adiciona o card ao container
-      container.appendChild(card);
-    });
-  } catch (error) {
-    console.error("Erro ao carregar os produtos:", error);
-  }
-}
+                  card.appendChild(img);
+                  card.appendChild(nome);
+                  card.appendChild(preco);
+                  card.appendChild(button);
 
-// Carrega os produtos assim que a página for carregada
-window.onload = carregarProdutos;
+                  container.appendChild(card);
+              });
+          } catch (error) {
+              console.error('Erro ao carregar produtos:', error);
+          }
+      }
+
+      // Carregar produtos ao carregar a página
+      window.addEventListener('DOMContentLoaded', () => {
+          carregarProdutos('brincos');
+          carregarProdutos('braceletes');
+          carregarProdutos('pulseiras');
+          carregarProdutos('colares');
+          carregarProdutos('aneis');
+      });

@@ -7,11 +7,11 @@ const port = 3000;
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
-    database: 'loja_ruby',
+    password: '',  // Nenhuma senha
+    database: 'loja_ruby'
 });
 
-// Conectar ao banco de dados
+// Conectando ao banco de dados
 connection.connect((err) => {
     if (err) {
         console.error('Erro ao conectar ao banco de dados:', err.message);
@@ -20,18 +20,30 @@ connection.connect((err) => {
     console.log('Conexão com o banco de dados realizada com sucesso!');
 });
 
-// Definir uma rota para recuperar os produtos
-app.get('/produtos', (req, res) => {
-    const query = 'SELECT * FROM produtos'; // Certifique-se de que a tabela e os campos estão corretos
+// Rota para retornar produtos por categoria
+app.get('/produtos/:categoria', (req, res) => {
+    const categoria = req.params.categoria;
+
+    // Verificar se a categoria existe
+    const categoriasValidas = ['brincos', 'pulseiras', 'braceletes', 'colares', 'aneis']; // Nomes das tabelas
+
+    if (!categoriasValidas.includes(categoria)) {
+        return res.status(400).json({ error: 'Categoria inválida' });
+    }
+
+    // Consulta à tabela correspondente
+    const query = `SELECT * FROM ${categoria}`;
+
     connection.query(query, (err, results) => {
         if (err) {
-            return res.status(500).send('Erro ao recuperar os produtos');
+            console.error('Erro ao consultar os produtos:', err);
+            return res.status(500).json({ error: 'Erro ao consultar os produtos' });
         }
-        res.json(results); // Envia os produtos como JSON
+        res.json(results);
     });
 });
 
-// Servir arquivos estáticos (como HTML, CSS e JS)
+// Servir arquivos estáticos
 app.use(express.static('public'));
 
 // Iniciar o servidor

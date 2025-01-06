@@ -259,16 +259,15 @@
     width: 100px;
     height: 2px;
     background-color: red;
+    transform: translate(-50%);
 }
 
 .titulo::before {
     left: calc(50% - 200px);  /* ajusta a linha à esquerda */
-    transform: translateY(-50%);
 }
 
 .titulo::after {
-    right: calc(50% - 200px); /* ajusta a linha à direita */
-    transform: translateY(-50%);
+    right: calc(50% - 300px); /* ajusta a linha à direita */
 }
 
 .conteiner-cards {
