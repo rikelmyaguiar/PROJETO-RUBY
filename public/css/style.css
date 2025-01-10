@@ -97,15 +97,6 @@
     z-index: 9999;
 }
   
-/*.modal-conteudo {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    height: 100%;
-    justify-content: center;
-}*/
-  
 /* Estilo do botão de fechar (x) */
 .botao-close {
     font-size: 50px;
@@ -247,7 +238,7 @@
     position: relative;
     margin-top: 50px;
     text-align: center;
-    font-size: 24px;
+    font-size: 30px;
     font-family: "Montserrat", sans-serif;
     font-weight: 600;
 }
@@ -406,3 +397,4 @@
     font-size: 14px;
     color: #666;
 }
+

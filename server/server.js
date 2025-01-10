@@ -22,10 +22,10 @@ connection.connect((err) => {
 
 // Rota para retornar produtos por categoria
 app.get('/produtos/:categoria', (req, res) => {
-    const categoria = req.params.categoria;
+    const categoria = req.params.categoria.toLowerCase();
 
     // Verificar se a categoria existe
-    const categoriasValidas = ['brincos', 'pulseiras', 'braceletes', 'colares', 'aneis']; // Nomes das tabelas
+    const categoriasValidas = ['ofertas', 'brincos', 'pulseiras', 'braceletes', 'colares', 'aneis']; // Nomes das tabelas
 
     if (!categoriasValidas.includes(categoria)) {
         return res.status(400).json({ error: 'Categoria inválida' });
