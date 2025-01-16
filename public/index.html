@@ -22,8 +22,8 @@
             </div>
             <div class="conteiner-actions">
                 <div class="conteiner-busca">
-                    <input type="text" class="caixa-de-busca" placeholder="Buscar Produto...">
-                    <button class="botao-lupa">
+                    <input type="text" class="caixa-de-busca" id="busca" placeholder="Buscar Produto...">
+                    <button class="botao-lupa" id="botao-lupa">
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
@@ -67,6 +67,11 @@
         <a href="https://api.whatsapp.com/send?phone=559996418464" target="_blank"      class="whatsapp-icon">
             <img src="imagens/icones/whatsapp-icon.png" alt="WhatsApp">
         </a>
+
+        <!-- Aviso de nenhum resultado-->
+        <div id="mensagem-erro"> 
+            Nenhum resultado encontrado
+        </div>
 
         <h1 class="titulo">O F E R T A S</h1>
         <div class="conteiner-cards" id="cards-conteiner-ofertas">
@@ -136,6 +141,7 @@
     <script src="scriptSacola/script.js"></script>
     <script src="renderCard/renderCard.js"></script>
     <script src="renderCategorias/renderCategorias.js"></script>
+    <script src="scriptBusca/scriptBusca.js"></script>
 
 </body>
 </html>

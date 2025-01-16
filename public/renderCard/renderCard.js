@@ -51,7 +51,7 @@ async function carregarProdutos(categoria) {
     }
 }
 
-// Carregar produtos ao carregar a página
+// Carrega os produtos ao carregar a página
 window.addEventListener('DOMContentLoaded', () => {
     carregarProdutos('ofertas')
     carregarProdutos('brincos');

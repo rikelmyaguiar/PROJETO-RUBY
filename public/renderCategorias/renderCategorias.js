@@ -1,55 +1,71 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Função que cria e renderiza os cards para a seção escolhida
-    async function carregarProdutos(categoria) {
-        try {
-            const response = await fetch(`http://localhost:3000/produtos/${categoria}`);
-            if (!response.ok) {
-                throw new Error('Erro ao carregar produtos');
+document.addEventListener('DOMContentLoaded', () => {
+    const menuLinks = document.querySelectorAll('.menu-link'); // Links do menu
+    const containers = document.querySelectorAll('.conteiner-cards'); // Todos os contêineres de produtos
+    const allTitles = document.querySelectorAll('.titulo'); // Títulos das categorias
+
+    // Função para normalizar texto (remover acentos e transformar para minúsculas)
+    function normalizarTexto(texto) {
+        return texto
+            .normalize('NFD') // Decompõe caracteres com diacríticos
+            .replace(/[\u0300-\u036f]/g, '') // Remove os diacríticos
+            .replace(/\s+/g, '') // Remove espaços
+            .toLowerCase(); // Transforma em minúsculas
+    }
+
+    // Função para exibir apenas a categoria selecionada
+    function mostrarCategoria(categoria) {
+        // Oculta todos os contêineres e títulos
+        containers.forEach(container => {
+            container.style.display = 'none';
+        });
+        allTitles.forEach(title => {
+            title.style.display = 'none';
+        });
+
+        if (categoria === 'home') {
+            // Mostra todos os produtos e títulos
+            containers.forEach(container => {
+                container.style.display = 'flex';
+            });
+            allTitles.forEach(title => {
+                title.style.display = 'block';
+            });
+        } else {
+            // Exibe o contêiner e título da categoria clicada
+            const categoriaContainer = document.getElementById(`cards-conteiner-${categoria}`);
+            const categoriaTitle = Array.from(allTitles).find(title => 
+                normalizarTexto(title.textContent) === categoria
+            );
+
+            if (categoriaContainer) {
+                categoriaContainer.style.display = 'flex'; // Exibe o contêiner da categoria clicada
+            } else {
+                console.error(`Contêiner não encontrado para a categoria: ${categoria}`);
             }
 
-            const produtos = await response.json();
-            const container = document.getElementById('cards-container');
-            container.innerHTML = ''; // Limpar o container de cards antes de adicionar novos
-
-            produtos.forEach(produto => {
-                const card = document.createElement('div');
-                card.classList.add('card');
-
-                const img = document.createElement('img');
-                img.src = 'imagens/produtos/joia/joia.png'; // Substitua por imagens reais
-                img.alt = produto.nome;
-
-                const nome = document.createElement('h3');
-                nome.textContent = produto.nome;
-
-                const preco = document.createElement('p');
-                preco.innerHTML = `R$ <span>${produto.preco}</span>`;
-
-                const button = document.createElement('button');
-                button.textContent = 'ADICIONAR';
-
-                card.appendChild(img);
-                card.appendChild(nome);
-                card.appendChild(preco);
-                card.appendChild(button);
-
-                container.appendChild(card);
-            });
-        } catch (error) {
-            console.error('Erro ao carregar produtos:', error);
+            if (categoriaTitle) {
+                categoriaTitle.style.display = 'block'; // Exibe o título da categoria clicada
+            } else {
+                console.error(`Título não encontrado para a categoria: ${categoria}`);
+            }
         }
     }
 
-    // Adicionar evento de clique nos links do menu
-    const menuLinks = document.querySelectorAll('.menu-link');
+    // Adiciona evento de clique nos links do menu
     menuLinks.forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault(); // Previne o comportamento padrão de navegação
-            const categoria = link.dataset.secao;
-            carregarProdutos(categoria); // Carregar produtos da categoria selecionada
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const categoria = normalizarTexto(link.textContent.trim()); // Normaliza o nome da categoria
+            mostrarCategoria(categoria); // Chama a função para exibir a categoria
         });
     });
 
-    // Carregar os produtos de "brincos" inicialmente
+    // Carregar todas as categorias ao iniciar
+    carregarProdutos('ofertas');
     carregarProdutos('brincos');
+    carregarProdutos('braceletes');
+    carregarProdutos('pulseiras');
+    carregarProdutos('colares');
+    carregarProdutos('aneis');
+    mostrarCategoria('home'); 
 });
