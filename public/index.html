@@ -13,7 +13,7 @@
 <body>
     <header>
         <div class="top-taxa">
-            <p>HORÁRIO DE ENTREGA: 08:00 ÀS 11:00 E 14:00 ÀS 18:00 - TAXA DE FRETE PARA TODOS OS LUGARES: R$ 5,00</p> 
+            <p>HORÁRIO DE ENTREGA: 08:00 ÀS 11:00 E 14:00 ÀS 18:00</p> 
         </div>
 
         <div class="top-logo-container">
@@ -36,8 +36,22 @@
              <!-- Modal da sacola -->
             <div id="Modal" class="modal-sacola">
                 <div class="modal-conteudo">
-                  <span class="botao-close" id="closeModal">&times;</span>
-                  <p>Conteúdo do Modal</p>
+                    <span class="botao-close" id="closeModal">&times;</span>
+                  
+                    <div class="produto-sacola">
+                        <img src="imagens/produtos/joia/joia.png" alt="Nome da Joia" class="imagem-produto-sacola">
+                        <div class="info-produto-sacola">
+                            <h3 class="nome-produto">Nome da Joia</h3>
+                            <p class="detalhes-produto">Cor: <span class="cor-produto">Dourado</span></p>
+                            <p class="detalhes-produto">Tamanho: <span class="tamanho-produto">M</span></p>
+                            <div class="quantidade-container">
+                                <label for="quantidade">Qtd:</label>
+                                <input type="number" min="1" value="1" class="quantidade-produto" data-preco="59.90">
+                            </div>
+                            <p class="preco-total">Total: R$ <span class="total-produto">59,90</span></p>
+                            <button class="remover-produto">Remover</button>
+                        </div>
+                    </div>  
 
                   <div class="botoes-conteiner">
                     <button class="botao-finalizar">Finalizar Compra</button>
@@ -59,12 +73,13 @@
                 <li class="menu-itens"><a href="#" class="menu-link">ANÉIS</a></li>
             </ul>
         </nav>
+
         
     </header>
 
 
     <main>
-        <a href="https://api.whatsapp.com/send?phone=559996418464" target="_blank"      class="whatsapp-icon">
+        <a href="https://api.whatsapp.com/send?phone=559996418464" target="_blank" class="whatsapp-icon">
             <img src="imagens/icones/whatsapp-icon.png" alt="WhatsApp">
         </a>
 
@@ -103,6 +118,49 @@
             <!-- Render dos anéis-->
         </div>
 
+
+
+        <div class="modal">
+            <div class="left">
+              <img src="imagens/produtos/joia/joia.png" alt="Brinco" class="main-photo">
+              <div class="thumbnail-container">
+                <img src="imagens/produtos/joia/joia.png" alt="Thumb 1">
+                <img src="imagens/produtos/joia/joia.png" alt="Thumb 2">
+                <img src="imagens/produtos/joia/joia.png" alt="Thumb 3">
+              </div>
+            </div>
+        
+            <div class="right">
+              <h2>Brinco 3 Fios</h2>
+              <p class="price">R$89,90</p>
+        
+              <label for="color">Cor</label>
+              <select id="color">
+                <option>Dourado</option>
+                <option>Prata</option>
+                <option>Rosé</option>
+              </select>
+        
+              <label for="size">Tamanho</label>
+              <select id="size">
+                <option>Pequeno</option>
+                <option>Médio</option>
+                <option>Grande</option>
+              </select>
+        
+              <label>Quantidade</label>
+              <div class="quantity">
+                <button>-</button>
+                <span>1</span>
+                <button>+</button>
+              </div>
+        
+              <button class="buy-btn">Comprar</button>
+            </div>
+          </div>
+
+       
+
     </main>
 
     <footer class="footer">
@@ -127,8 +185,8 @@
             <div class="footer-section">
                 <h3>Contato</h3>
                 <ul>
-                    <li>Telefone: (99) 99641-8464</li>
-                    <li>E-mail: alverlioliveira@outlook.com</li>
+                    <li>Telefone: <a href="tel:+5599996418464">(99) 99641-8464</a></li>
+                    <li>E-mail: <a href="mailto:alverlioliveira@outlook.com">alverlioliveira@outlook.com</a></li>
                 </ul>
             </div>
         </div>
@@ -138,10 +196,11 @@
         <p class="footer-copyright">Copyright &copy; 2025 Ruby Acessórios. Todos os direitos reservados.</p>
     </footer>
     
-    <script src="scriptSacola/script.js"></script>
-    <script src="renderCard/renderCard.js"></script>
-    <script src="renderCategorias/renderCategorias.js"></script>
-    <script src="scriptBusca/scriptBusca.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/renderCards.js"></script>
+    <script src="js/renderCategorias.js"></script>
+    <script src="js/BuscarProdutos.js"></script>
+    <script src="js/scriptModalProdutos.js"></script>
 
 </body>
 </html>

@@ -1,3 +1,4 @@
+//Script para buscar produtos
 document.addEventListener('DOMContentLoaded', () => {
     const buscaInput = document.getElementById('busca'); // Campo de busca
     const botaoLupa = document.getElementById('botao-lupa'); // Botão da lupa

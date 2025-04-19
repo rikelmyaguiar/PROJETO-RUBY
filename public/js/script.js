@@ -1,3 +1,4 @@
+//Script para apenas abrir o modal da sacola
 // Obtém os elementos
 const modal = document.getElementById("Modal");
 const openModalBtn = document.getElementById("openModal");

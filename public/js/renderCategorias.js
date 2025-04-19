@@ -1,3 +1,4 @@
+//Script para renderizar as categorias ao ser clicada no menu nav
 document.addEventListener('DOMContentLoaded', () => {
     const menuLinks = document.querySelectorAll('.menu-link'); // Links do menu
     const containers = document.querySelectorAll('.conteiner-cards'); // Todos os contêineres de produtos
