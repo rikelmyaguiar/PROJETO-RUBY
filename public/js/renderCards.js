@@ -15,7 +15,7 @@ async function carregarProdutos(categoria) {
             card.classList.add('card');
 
             const img = document.createElement('img');
-            img.src = 'imagens/produtos/joia/joia.png'; // Usando uma imagem fixa, pode ser ajustado dinamicamente
+            img.src = produto.foto; // Carrega as fotos dos produtos nos cards
             img.alt = produto.nome;
             img.classList.add('card-imagem'); // Classe para facilitar a estilização
 
@@ -38,10 +38,7 @@ async function carregarProdutos(categoria) {
             const button = document.createElement('button');
             button.textContent = 'ADICIONAR';
             button.disabled = produto.quantidade === 0; // Desativa o botão se o produto estiver esgotado
-            button.addEventListener('click', () => abrirModalProduto(produto)); // Abre o modal ao clicar no botão
 
-            // Eventos para abrir o modal ao clicar na imagem ou no botão
-            img.addEventListener('click', () => abrirModalProduto(produto));
             button.addEventListener('click', (e) => {
                 e.stopPropagation(); // Evita que o clique no botão também dispare o evento de imagem
                 abrirModalProduto(produto);
@@ -60,111 +57,6 @@ async function carregarProdutos(categoria) {
     }
 }
 
-// Função para abrir o modal de um produto específico
-// Função para abrir o modal de um produto específico
-function abrirModalProduto(produto) {
-    // Seleciona o modal
-    const modal = document.getElementById('modal-produto');
-    
-    // Verifica se o campo 'foto' existe
-    const fotoPrincipal = produto.foto || ''; // Se não existir, cria uma string vazia
-    
-    // Preenche o conteúdo do modal com os dados do produto
-    const modalConteudo = modal.querySelector('.modal-conteudo');
-    modalConteudo.innerHTML = `
-      <div class="left">
-        <img src="imagens/produtos/joia/${fotoPrincipal}" alt="${produto.nome}" class="main-photo" id="foto-principal">
-        <!-- Removei o map, pois não existe mais o campo 'fotos' -->
-      </div>
-      <div class="right">
-        <h2>${produto.nome}</h2>
-        <p class="price" id="preco">R$ ${produto.preco}</p>
-        <label for="color">Cor</label>
-        <select id="color">
-          ${produto.cores.map(cor => `<option value="${cor}">${cor}</option>`).join('')}
-        </select>
-        
-        <label for="size">Tamanho</label>
-        <select id="size">
-          ${produto.tamanhos.map(tamanho => `<option value="${tamanho}">${tamanho}</option>`).join('')}
-        </select>
-        
-        <label>Quantidade</label>
-        <div class="quantity">
-          <button onclick="alterarQuantidade(-1, ${produto.id})">-</button>
-          <span id="quantidade">1</span>
-          <button onclick="alterarQuantidade(1, ${produto.id})">+</button>
-        </div>
-        
-        <button class="buy-btn" onclick="adicionarAoCarrinho(${produto.id}, '${produto.nome}', ${produto.preco})">Adicionar ao Carrinho</button>
-      </div>
-    `;
-    
-    // Exibe o modal
-    modal.classList.remove('hidden');
-  }  
-
-// Função para trocar a foto principal
-function trocarFoto(foto) {
-    const fotoPrincipal = document.getElementById('foto-principal');
-    fotoPrincipal.src = `imagens/produtos/joia/${foto}`;
-}
-
-// Função para alterar a quantidade no modal
-function alterarQuantidade(delta, idProduto) {
-    const quantidade = document.getElementById('quantidade');
-    const produto = obterProdutoPorId(idProduto); // Função para obter produto do banco de dados ou de um array
-    let novaQuantidade = parseInt(quantidade.textContent) + delta;
-    
-    // Verifica se a nova quantidade não excede o estoque
-    if (novaQuantidade >= 1 && novaQuantidade <= produto.quantidade) {
-        quantidade.textContent = novaQuantidade;
-        atualizarPreco(produto.preco, novaQuantidade);
-    }
-}
-
-// Função para atualizar o preço com base na quantidade
-function atualizarPreco(precoUnitario, quantidade) {
-    const precoTotal = precoUnitario * quantidade;
-    document.getElementById('preco').textContent = `R$ ${precoTotal.toFixed(2)}`;
-}
-
-// Função para adicionar o produto ao carrinho (no LocalStorage)
-function adicionarAoCarrinho(idProduto, nomeProduto, preco) {
-    const quantidade = document.getElementById('quantidade').textContent;
-    const produto = {
-        id: idProduto,
-        nome: nomeProduto,
-        preco: preco,
-        quantidade: quantidade,
-    };
-
-    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-    carrinho.push(produto);
-    localStorage.setItem('carrinho', JSON.stringify(carrinho));
-
-    alert('Produto adicionado ao carrinho!');
-    fecharModalProduto();
-}
-
-// Função para fechar o modal
-function fecharModalProduto() {
-    const modal = document.getElementById('modal-produto');
-    modal.classList.add('hidden');
-}
-
-// Função para obter o produto pelo ID (pode vir de um array ou banco de dados)
-function obterProdutoPorId(idProduto) {
-    // Aqui, você deve buscar o produto diretamente no banco de dados ou de uma API
-    // Esse código de exemplo apenas simula um array de produtos, você deve substituí-lo
-    const produtos = [
-        { id: 1, nome: 'Brinco de Ouro', preco: 150, quantidade: 10, fotos: ['foto1.png', 'foto2.png'], cores: ['Dourado', 'Prata'], tamanhos: ['P', 'M', 'G'] },
-        // Adicione outros produtos aqui
-    ];
-
-    return produtos.find(produto => produto.id === idProduto);
-}
-
 // Carrega os produtos ao carregar a página
 window.addEventListener('DOMContentLoaded', () => {
     carregarProdutos('ofertas');
@@ -174,3 +66,102 @@ window.addEventListener('DOMContentLoaded', () => {
     carregarProdutos('colares');
     carregarProdutos('aneis');
 });
+
+// Função para abrir o modal com os dados do produto
+function abrirModalProduto(produto) {
+    const modal = document.getElementById('modal-produto');
+
+    // Monta o conteúdo do modal
+    const modalConteudo = modal.querySelector('.modal-conteudo');
+    modalConteudo.innerHTML = `
+        <div class="left">
+            <img src="${produto.foto}" alt="${produto.nome}" class="main-photo" id="foto-principal">
+        </div>
+        <div class="right">
+            <h2>${produto.nome}</h2>
+            <p class="price" id="preco">R$ ${produto.preco.toFixed(2)}</p>
+
+            <label for="cor">Cor</label>
+            <select id="cor">
+                ${produto.cores.map(cor => `<option value="${cor}">${cor}</option>`).join('')}
+            </select>
+
+            <label for="tamanho">Tamanho</label>
+            <select id="tamanho">
+                ${produto.tamanhos.map(t => `<option value="${t}">${t}</option>`).join('')}
+            </select>
+
+            <label>Quantidade</label>
+            <div class="quantity">
+                <button id="btn-diminuir">-</button>
+                <span id="quantidade">1</span>
+                <button id="btn-aumentar">+</button>
+            </div>
+
+            <button class="buy-btn" id="btn-adicionar">Adicionar ao Carrinho</button>
+            <button class="buy-btn" style="margin-top: 10px; background-color: gray;" id="btn-cancelar">Cancelar</button>
+        </div>
+    `;
+
+    // Exibe o modal
+    modal.classList.remove('hidden');
+
+    // Controle de quantidade
+    let quantidadeAtual = 1;
+    const spanQuantidade = modal.querySelector('#quantidade');
+    const precoEl = modal.querySelector('#preco');
+
+    modal.querySelector('#btn-aumentar').addEventListener('click', () => {
+        if (quantidadeAtual < produto.quantidade) {
+            quantidadeAtual++;
+            spanQuantidade.textContent = quantidadeAtual;
+            atualizarPreco();
+        }
+    });
+
+    modal.querySelector('#btn-diminuir').addEventListener('click', () => {
+        if (quantidadeAtual > 1) {
+            quantidadeAtual--;
+            spanQuantidade.textContent = quantidadeAtual;
+            atualizarPreco();
+        }
+    });
+
+    function atualizarPreco() {
+        const total = produto.preco * quantidadeAtual;
+        precoEl.textContent = `R$ ${total.toFixed(2)}`;
+    }
+
+    // Botão de adicionar ao carrinho
+    modal.querySelector('#btn-adicionar').addEventListener('click', () => {
+        const cor = modal.querySelector('#cor').value;
+        const tamanho = modal.querySelector('#tamanho').value;
+
+        const itemCarrinho = {
+            id: produto.id,
+            nome: produto.nome,
+            preco: produto.preco,
+            quantidade: quantidadeAtual,
+            cor: cor,
+            tamanho: tamanho,
+            foto: produto.foto
+        };
+
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        carrinho.push(itemCarrinho);
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+
+        alert('Produto adicionado à sacola!');
+        fecharModalProduto();
+    });
+
+    // Botão de cancelar
+    modal.querySelector('#btn-cancelar').addEventListener('click', fecharModalProduto);
+}
+
+// Função para fechar o modal
+function fecharModalProduto() {
+    const modal = document.getElementById('modal-produto');
+    modal.classList.add('hidden');
+}
+
