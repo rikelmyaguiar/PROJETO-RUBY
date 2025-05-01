@@ -353,6 +353,10 @@
 }
 
 /*Modal para adicionar produto à sacola*/
+.hidden {
+    display: none;
+}
+
 .modal {
     max-width: 900px;
     margin: 40px auto;

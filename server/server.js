@@ -25,13 +25,12 @@ app.get('/produtos/:categoria', (req, res) => {
     const categoria = req.params.categoria.toLowerCase();
 
     // Verificar se a categoria existe
-    const categoriasValidas = ['ofertas', 'brincos', 'pulseiras', 'braceletes', 'colares', 'aneis']; // Nomes das tabelas
+    const categoriasValidas = ['ofertas', 'brincos', 'pulseiras', 'braceletes', 'colares', 'aneis'];
 
     if (!categoriasValidas.includes(categoria)) {
         return res.status(400).json({ error: 'Categoria inválida' });
     }
 
-    // Consulta à tabela correspondente
     const query = `SELECT * FROM ${categoria}`;
 
     connection.query(query, (err, results) => {
@@ -40,6 +39,33 @@ app.get('/produtos/:categoria', (req, res) => {
             return res.status(500).json({ error: 'Erro ao consultar os produtos' });
         }
         res.json(results);
+    });
+});
+
+// Rota para retornar produto pelo ID na categoria
+app.get('/produto/:categoria/:id', (req, res) => {
+    const categoria = req.params.categoria.toLowerCase();
+    const idProduto = req.params.id;
+
+    // Verificar se a categoria existe
+    const categoriasValidas = ['ofertas', 'brincos', 'pulseiras', 'braceletes', 'colares', 'aneis'];
+
+    if (!categoriasValidas.includes(categoria)) {
+        return res.status(400).json({ error: 'Categoria inválida' });
+    }
+
+    // Consultar o produto na tabela da categoria
+    const query = `SELECT * FROM ${categoria} WHERE id = ?`;
+
+    connection.query(query, [idProduto], (err, results) => {
+        if (err) {
+            console.error('Erro ao consultar o produto:', err);
+            return res.status(500).json({ error: 'Erro ao consultar o produto' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Produto não encontrado' });
+        }
+        res.json(results[0]); // Retorna o produto encontrado
     });
 });
 
