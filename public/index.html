@@ -105,47 +105,6 @@
         <div class="conteiner-cards" id="cards-conteiner-aneis">
             <!-- Render dos anéis-->
         </div>
-
-
-        <!--<div class="modal">
-            <div class="left">
-              <img src="imagens/produtos/joia/joia.png" alt="Brinco" class="main-photo">
-              <div class="thumbnail-container">
-                <img src="imagens/produtos/joia/joia.png" alt="Thumb 1">
-                <img src="imagens/produtos/joia/joia.png" alt="Thumb 2">
-                <img src="imagens/produtos/joia/joia.png" alt="Thumb 3">
-              </div>
-            </div>
-        
-            <div class="right">
-              <h2>Brinco 3 Fios</h2>
-              <p class="price">R$89,90</p>
-        
-              <label for="color">Cor</label>
-              <select id="color">
-                <option>Dourado</option>
-                <option>Prata</option>
-                <option>Rosé</option>
-              </select>
-        
-              <label for="size">Tamanho</label>
-              <select id="size">
-                <option>Pequeno</option>
-                <option>Médio</option>
-                <option>Grande</option>
-              </select>
-        
-              <label>Quantidade</label>
-              <div class="quantity">
-                <button>-</button>
-                <span>1</span>
-                <button>+</button>
-              </div>
-        
-              <button class="buy-btn">Comprar</button>
-            </div>
-          </div><!-->
-
        
 
     </main>
@@ -186,11 +145,44 @@
     <script src="js/AbrirSacola.js"></script>
     <script src="js/RenderCards.js"></script>
     <script src="js/RenderCategorias.js"></script>
-    <script src="js/BuscarProdutos.js"></script>
+    <script src="js/BuscarProdutos.js"></script> 
 
+      
+    
+    
+        <!-- Modal Produto -->
     <div id="modal-produto" class="modal hidden">
-        <div class="modal-conteudo"></div>
-    </div>
+        <div class="modal-conteudo">
+        <span class="fechar-modal" id="btn-fechar-modal">&times;</span>
+    
+        <div class="modal-imagens">
+            <img id="modal-imagem-principal" src="" alt="">
+            <div id="miniaturas"></div>
+        </div>
+    
+        <h2 id="modal-nome"></h2>
+        <p id="modal-preco"></p>
+    
+        <div class="modal-opcoes">
+            <label for="modal-cor">Cor:</label>
+            <select id="modal-cor"></select>
+    
+            <label for="modal-tamanho">Tamanho:</label>
+            <select id="modal-tamanho"></select>
+    
+            <label for="modal-quantidade">Quantidade:</label>
+            <input type="number" id="modal-quantidade" min="1" value="1">
+        </div>
+    
+        <p id="modal-total"></p>
+    
+        <div class="modal-botoes">
+            <button id="btn-adicionar-carrinho">Adicionar ao Carrinho</button>
+            <button id="btn-cancelar-modal">Cancelar</button>
+        </div>
+        </div>
+    </div> 
+
       
 
 </body>

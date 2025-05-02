@@ -353,113 +353,132 @@
 }
 
 /*Modal para adicionar produto à sacola*/
-.hidden {
-    display: none;
-}
-
+/* Modal geral */
 .modal {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 20px;
-    display: flex;
-    gap: 40px;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    background: #fff;
-  }
-
-  .left, .right {
-    flex: 1;
-  }
-
-  .main-photo {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    border-radius: 10px;
-    margin-bottom: 10px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
   }
-
-  .thumbnail-container {
+  
+  /* Oculta o modal */
+  .modal.hidden {
+    display: none;
+  }
+  
+  /* Conteúdo do modal */
+  .modal-conteudo {
+    background-color: #fff;
+    padding: 20px;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  }
+  
+  /* Botão de fechar */
+  .fechar-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+  }
+  
+  /* Imagens do modal */
+  .modal-imagens {
+    text-align: center;
+  }
+  
+  .modal-imagens img {
+    max-width: 60%;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  /* Miniaturas */
+  #miniaturas {
+    margin-top: 10px;
     display: flex;
     gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
-
-  .thumbnail-container img {
+  
+  .miniatura {
     width: 60px;
     height: 60px;
-    border-radius: 6px;
-    border: 2px solid transparent;
+    object-fit: cover;
+    border: 2px solid #ccc;
     cursor: pointer;
-  }
-
-  .thumbnail-container img:hover {
-    border-color: black;
-  }
-
-  .right h2 {
-    font-size: 26px;
-    margin-bottom: 10px;
-    font-family: "Montserrat", sans-serif;
-  }
-
-  .price {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    font-family: Arial, sans-serif;
-  }
-
-  .right label {
-    display: block;
-    margin-top: 15px;
-    font-weight: bold;
-    font-family: "Montserrat", sans-serif;
-  }
-
-  .right select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
     border-radius: 6px;
+    transition: transform 0.2s;
   }
-
-  .quantity {
+  
+  .miniatura:hover {
+    transform: scale(1.05);
+    border-color: #999;
+  }
+  
+  /* Título, preço, seletores */
+  .modal-opcoes {
+    margin: 15px 0;
     display: flex;
-    align-items: center;
-    margin: 20px 0;
-    font-family: Arial;
+    flex-direction: column;
+    gap: 10px;
   }
-
-  .quantity button {
-    width: 30px;
-    height: 30px;
-    background: white;
-    border: 1px solid black;
-    cursor: pointer;
+  
+  .modal-opcoes label {
     font-weight: bold;
   }
-
-  .quantity span {
-    margin: 0 15px;
+  
+  .modal-opcoes select,
+  .modal-opcoes input {
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  /* Total */
+  #modal-total {
+    font-weight: bold;
     font-size: 18px;
+    margin: 10px 0;
   }
-
-  .buy-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: rgb(187, 43, 43);
-    color: white;
-    border: none;
-    border-radius: 6px;
+  
+  /* Botões */
+  .modal-botoes {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .modal-botoes button {
+    padding: 10px 15px;
     font-size: 16px;
-    font-weight: bold;
+    border-radius: 8px;
+    border: none;
     cursor: pointer;
   }
-
-  .buy-btn:hover {
-    background-color: rgb(144, 22, 22);
+  
+  #btn-adicionar-carrinho {
+    background-color: #4CAF50;
+    color: white;
   }
-
+  
+  #btn-cancelar-modal {
+    background-color: #f44336;
+    color: white;
+  }
+  
 /*----Footer----*/
 .footer {
     background-color: #202020; 
