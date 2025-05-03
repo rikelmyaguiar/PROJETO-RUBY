@@ -22,7 +22,10 @@ async function carregarProdutos(categoria) {
           img.src = primeiraFoto;
           img.alt = produto.nome;
           img.classList.add('card-imagem');
-          
+
+          img.addEventListener('click', () => {
+            abrirModalProduto(produto);
+        });
 
           const nome = document.createElement('h3');
           nome.textContent = produto.nome;
@@ -61,7 +64,7 @@ async function carregarProdutos(categoria) {
   }
 }
 
-
+// Função para abrir o modal de produto
 function abrirModalProduto(produto) {
   const modal = document.getElementById('modal-produto');
   const imagemPrincipal = document.getElementById('modal-imagem-principal');
@@ -92,8 +95,8 @@ function abrirModalProduto(produto) {
 
   // Cores
   corSelect.innerHTML = '';
-  const cores = produto.cores?.split(',') || [];
-  cores.forEach(cor => {
+  const cor = produto.cor?.split(',') || [];
+  cor.forEach(cor => {
     const option = document.createElement('option');
     option.value = cor.trim();
     option.textContent = cor.trim();
@@ -102,8 +105,8 @@ function abrirModalProduto(produto) {
 
   // Tamanhos
   tamanhoSelect.innerHTML = '';
-  const tamanhos = produto.tamanhos?.split(',') || [];
-  tamanhos.forEach(t => {
+  const tamanho = produto.tamanho?.split(',') || [];
+  tamanho.forEach(t => {
     const option = document.createElement('option');
     option.value = t.trim();
     option.textContent = t.trim();
@@ -125,11 +128,39 @@ function abrirModalProduto(produto) {
     };
     miniaturasContainer.appendChild(mini);
   });
-}
-document.getElementById('btn-fechar-modal').onclick = fecharModalProduto;
-document.getElementById('btn-cancelar-modal').onclick = fecharModalProduto;
 
+  // Adicionar ao carrinho no LocalStorage
+  const btnAdicionar = document.getElementById('btn-adicionar-sacola');
+  btnAdicionar.onclick = () => {
+    const quantidade = parseInt(quantidadeInput.value);
+    const corSelecionada = corSelect.value;
+    const tamanhoSelecionado = tamanhoSelect.value;
+
+    const produtoCarrinho = {
+      id: produto.id,
+      nome: produto.nome,
+      cor: corSelecionada,
+      tamanho: tamanhoSelecionado,
+      quantidade: quantidade,
+      preco: produto.preco,
+      total: (quantidade * produto.preco).toFixed(2),
+    };
+
+    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    carrinho.push(produtoCarrinho);
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+
+    fecharModalProduto();
+  };
+}
+
+// Função para fechar o modal de produto
+// === FECHA O MODAL ===
 function fecharModalProduto() {
   document.getElementById('modal-produto').classList.add('hidden');
 }
+
+// === BOTÕES DE FECHAR ===
+document.getElementById('btn-cancelar-modal').onclick = fecharModalProduto;
+document.getElementById('btn-fechar-modal').onclick = fecharModalProduto;
 

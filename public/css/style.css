@@ -377,7 +377,7 @@
     background-color: #fff;
     padding: 20px;
     width: 90%;
-    max-width: 600px;
+    max-width: 400px;
     border-radius: 10px;
     position: relative;
     box-shadow: 0 0 15px rgba(0,0,0,0.3);
@@ -469,8 +469,8 @@
     cursor: pointer;
   }
   
-  #btn-adicionar-carrinho {
-    background-color: #4CAF50;
+  #btn-adicionar-sacola {
+    background-color: #32bb37;
     color: white;
   }
   
