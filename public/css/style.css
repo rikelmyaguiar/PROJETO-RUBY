@@ -92,67 +92,96 @@
     cursor: pointer;
 }
 
-/*modal da sacola*/
+/* Modal da sacola */
 .modal-sacola {
     display: none;
     position: fixed;
     top: 0;
-    right: -500px; /* Inicialmente, o modal está fora da tela */
+    padding-top: 60px;
+    right: -500px;
     width: 500px;
     height: 100%;
     background-color: #fff;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-    transition: right 0.5s ease; 
+    transition: right 0.5s ease;
     z-index: 9999;
-}
-
+    font-family: "Poppins", sans-serif;
+    overflow-y: auto;
+  }
   
-/* Estilo do botão de fechar (x) */
-.botao-close {
+  .botao-close {
     font-size: 50px;
-    font-weight: bold;
     cursor: pointer;
     position: absolute;
-    top: 20px;
+    top: 1px;
     left: 10px;
-}
-
-.botao-close:hover {
+  }
+  
+  .botao-close:hover {
     color: #ff0000;
-}
-
-.botoes-conteiner {
-    margin-top: 630px;
+  }
+  
+  .botoes-conteiner {
+    margin-top: 20px;
     display: flex;
     gap: 10px;
     justify-content: center;
-}
-.botao-finalizar {
+    padding-bottom: 20px;
+  }
+  
+  .botao-finalizar,
+  .botao-esvaziar {
+    border: none;
+    border-radius: 8px;
+    width: 200px;
+    height: 40px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .botao-finalizar {
     background-color: rgb(62, 169, 9);
-    color: rgb(255, 255, 255);
-    border: none;
-    border-radius: 8px;
-    width: 200px; 
-    height: 40px;
-    cursor: pointer;
-    font-family: "Poppins", sans-serif;
-    font-weight: 600;
-}
-
-.botao-esvaziar {
+    color: white;
+  }
+  
+  .botao-esvaziar {
     background-color: rgb(232, 9, 9);
-    color: rgb(255, 255, 255);
-    border: none;
-    border-radius: 8px;
-    width: 200px; 
-    height: 40px;
-    cursor: pointer;
-    font-family: "Poppins", sans-serif;
-    font-weight: 600;
-}
-
-.remover-produto {
-    align-self: flex-start;
+    color: white;
+  }
+  
+  .sacola-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+  }
+  
+  .sacola-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  
+  .sacola-detalhes {
+    flex: 1;
+  }
+  
+  .sacola-detalhes p {
+    margin: 2px 0;
+    font-size: 14px;
+  }
+  
+  .quantidade-input {
+    width: 60px;
+    margin-top: 5px;
+    padding: 4px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .remover-produto {
     margin-top: 10px;
     background-color: #ff4d4d;
     color: #fff;
@@ -162,11 +191,111 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
     font-size: 14px;
-}
-
-.remover-produto:hover {
+  }
+  
+  .remover-produto:hover {
     background-color: #c0392b;
-}
+  }
+  
+/* Estilo do container do formulário de finalização */
+#formulario-cliente {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fafafa;
+    border-radius: 8px;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    font-family: Poppins, sans-serif;
+    z-index: 9999;
+    display: none; /* Mantém escondido até ser ativado via JS */
+  }
+  
+  /* Título do formulário */
+  #formulario-cliente p strong {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  /* Campos de input */
+  #formulario-cliente input[type="text"],
+  #formulario-cliente input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+  
+  /* Botão de enviar pedido */
+  #formulario-cliente #btn-enviar-pedido {
+    background-color: #3ea909;
+    color: #fff;
+    border: none;
+    padding: 12px 0;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-bottom: 8px;
+  }
+  
+  #formulario-cliente #btn-enviar-pedido:hover {
+    background-color: #318007;
+  }
+  
+  /* Botão de cancelar formulário */
+  #formulario-cliente #btn-cancelar-formulario {
+    background-color: #e82929;
+    color: #fff;
+    border: none;
+    padding: 12px 0;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  #formulario-cliente #btn-cancelar-formulario:hover {
+    background-color: #c0392b;
+  }  
+  
+  /* Ajuste das opções de pagamento acima do formulário */
+  #opcao-pagamento {
+    background-color: #fff;
+    padding: 20px;
+    margin: 0 20px 10px;
+    border-radius: 6px;
+    font-family: Poppins, sans-serif;
+  }
+  
+  #opcao-pagamento p {
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  #opcao-pagamento label {
+    display: inline-block;
+    margin-right: 12px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  #opcao-pagamento input[type="radio"] {
+    margin-right: 4px;
+  }
+  
 
 
 

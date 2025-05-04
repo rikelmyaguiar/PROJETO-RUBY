@@ -20,6 +20,12 @@ connection.connect((err) => {
     console.log('Conexão com o banco de dados realizada com sucesso!');
 });
 
+// Middleware para servir arquivos estáticos (ex: imagens, CSS, JS)
+app.use(express.static('public'));
+
+// Middleware para permitir receber JSON no body das requisições
+app.use(express.json());
+
 // Rota para retornar produtos por categoria
 app.get('/produtos/:categoria', (req, res) => {
     const categoria = req.params.categoria.toLowerCase();
@@ -69,8 +75,74 @@ app.get('/produto/:categoria/:id', (req, res) => {
     });
 });
 
-// Servir arquivos estáticos
-app.use(express.static('public'));
+// Rota para atualizar o estoque após adicionar ao carrinho
+app.post('/atualizar-estoque', (req, res) => {
+    const { id, categoria, quantidade } = req.body;
+
+    if (!id || !categoria || !quantidade) {
+        return res.status(400).json({ sucesso: false, erro: 'Dados inválidos' });
+    }
+
+    // Verifica se a categoria é válida
+    const categoriasValidas = ['ofertas', 'brincos', 'pulseiras', 'braceletes', 'colares', 'aneis'];
+    if (!categoriasValidas.includes(categoria.toLowerCase())) {
+        return res.status(400).json({ sucesso: false, erro: 'Categoria inválida' });
+    }
+
+    const query = `UPDATE ${categoria} SET quantidade = quantidade - ? WHERE id = ? AND quantidade >= ?`;
+
+    connection.query(query, [quantidade, id, quantidade], (err, result) => {
+        if (err) {
+            console.error('Erro ao atualizar estoque:', err);
+            return res.status(500).json({ sucesso: false, erro: 'Erro no servidor' });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(400).json({ sucesso: false, erro: 'Estoque insuficiente ou produto não encontrado.' });
+        }
+
+        res.json({ sucesso: true });
+    });
+});
+
+// Rota para inserir um novo pedido
+app.post('/pedidos', (req, res) => {
+    const {
+        foto, nome, cor, tamanho, preco, quantidade,
+        nome_cliente, endereco_cliente, bairro_cliente,
+        numero_cliente, pronto_referencia, telefone,
+        forma_pagamento // <-- Novo campo
+    } = req.body;
+
+    const preco_total = preco * quantidade;
+
+    const sql = `
+      INSERT INTO pedidos (
+        foto, nome, cor, tamanho, preco_total, quantidade,
+        nome_cliente, endereco_cliente, bairro_cliente,
+        numero_cliente, pronto_referencia, telefone,
+        forma_pagamento
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const valores = [
+        foto, nome, cor, tamanho, preco_total, quantidade,
+        nome_cliente, endereco_cliente, bairro_cliente,
+        numero_cliente, pronto_referencia, telefone,
+        forma_pagamento
+    ];
+
+    connection.query(sql, valores, (err, result) => {
+        if (err) {
+            console.error('Erro ao inserir pedido:', err);
+            return res.status(500).json({ erro: 'Erro ao inserir pedido.' });
+        }
+
+        res.status(201).json({ mensagem: 'Pedido inserido com sucesso.' });
+    });
+});
+
 
 // Iniciar o servidor
 app.listen(port, () => {

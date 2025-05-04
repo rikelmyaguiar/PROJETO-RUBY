@@ -33,23 +33,55 @@
                 <img src="imagens/icones/sacola-icon.png" alt="sacola" class="icon-sacola" id="openModal">
             </div>
 
-             <!-- Modal da sacola -->
+            <!-- Modal da sacola --> 
             <div id="Modal" class="modal-sacola">
-                <div class="modal-conteudo">
-                    <span class="botao-close" id="closeModal">&times;</span>
-                  
+                <span class="botao-close" id="closeModal">&times;</span>
 
-                    
+                <div id="sacola-itens" style="padding: 20px; overflow-y: auto; max-height: 550px;"></div>
 
-                  <div class="botoes-conteiner">
+                <div style="padding: 0 20px; font-weight: bold; font-family: Poppins, sans-serif;">
+                    Total: <span id="total-sacola">R$ 0,00</span>
+                </div>
+
+                <!-- Opção de pagamento -->
+                <div style="padding: 20px;" id="opcao-pagamento">
+                    <p><strong>Escolha a forma de pagamento:</strong></p>
+                    <label><input type="radio" name="pagamento" value="Pix"> Pix</label><br>
+                    <label><input type="radio" name="pagamento" value="Dinheiro"> Dinheiro</label><br>
+                    <label><input type="radio" name="pagamento" value="Cartão"> Cartão</label>
+                </div>
+                
+
+
+
+
+
+                <div class="botoes-conteiner">
                     <button class="botao-finalizar">Finalizar Compra</button>
-                    <button class="botao-esvaziar" >Esvaziar Sacola</button>
-                  </div>
+                    <button class="botao-esvaziar">Esvaziar Sacola</button>
                 </div>
             </div>
-        </div>
+
+
+
 
         </div>
+
+    
+                                            <!-- Formulário de Finalização -->
+                <div id="formulario-cliente" style="display: none; padding: 20px;">
+                    <p><strong>Preencha seus dados para finalizar:</strong></p>
+                    <input type="text" id="nome_cliente" placeholder="Nome completo" required><br>
+                    <input type="text" id="endereco_cliente" placeholder="Endereço" required><br>
+                    <input type="text" id="bairro_cliente" placeholder="Bairro" required><br>
+                    <input type="text" id="numero_cliente" placeholder="Número" required><br>
+                    <input type="text" id="ponto_referencia" placeholder="Ponto de referência"><br>
+                    <input type="tel" id="telefone_cliente" placeholder="Telefone" required><br>
+                    <button id="btn-enviar-pedido">Enviar Pedido</button>
+                    <button id="btn-cancelar-formulario">Cancelar</button>
+                </div>
+         
+
 
         <nav class="navbar">
             <ul class="menu">
