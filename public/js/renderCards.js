@@ -78,6 +78,7 @@ function abrirModalProduto(produto) {
   quantidadeInput.value = 1;
   totalEl.textContent = `Total: R$ ${produto.preco}`;
 
+  // Atualiza o total com base na quantidade
   quantidadeInput.oninput = () => {
     const qtd = parseInt(quantidadeInput.value) || 1;
     const total = (qtd * parseFloat(produto.preco)).toFixed(2);
@@ -86,8 +87,8 @@ function abrirModalProduto(produto) {
 
   // Cores
   corSelect.innerHTML = '';
-  const cor = produto.cor?.split(',') || [];
-  cor.forEach(cor => {
+  const cores = produto.cor?.split(',') || [];
+  cores.forEach(cor => {
     const option = document.createElement('option');
     option.value = cor.trim();
     option.textContent = cor.trim();
@@ -96,8 +97,8 @@ function abrirModalProduto(produto) {
 
   // Tamanhos
   tamanhoSelect.innerHTML = '';
-  const tamanho = produto.tamanho?.split(',') || [];
-  tamanho.forEach(t => {
+  const tamanhos = produto.tamanho?.split(',') || [];
+  tamanhos.forEach(t => {
     const option = document.createElement('option');
     option.value = t.trim();
     option.textContent = t.trim();
@@ -105,31 +106,19 @@ function abrirModalProduto(produto) {
   });
 
   // Fotos
-// Fotos
-miniaturasContainer.innerHTML = '';
+  miniaturasContainer.innerHTML = '';
+  const fotos = produto.foto ? produto.foto.split(',').map(f => f.trim()) : ['imagens/sem-foto.png'];
+  imagemPrincipal.src = fotos[0];
 
-let fotos = [];
-if (produto.foto && typeof produto.foto === 'string' && produto.foto.trim() !== '') {
-  fotos = produto.foto.split(',').map(f => f.trim()).filter(f => f);
-} else {
-  fotos = ['imagens/sem-foto.png'];
-}
+  fotos.forEach(foto => {
+    const mini = document.createElement('img');
+    mini.src = foto;
+    mini.classList.add('miniatura');
+    mini.onclick = () => imagemPrincipal.src = foto;
+    miniaturasContainer.appendChild(mini);
+  });
 
-const primeiraFoto = fotos[0];
-imagemPrincipal.src = primeiraFoto;
-
-fotos.forEach(foto => {
-  const mini = document.createElement('img');
-  mini.src = foto;
-  mini.classList.add('miniatura');
-  mini.onclick = () => {
-    imagemPrincipal.src = foto;
-  };
-  miniaturasContainer.appendChild(mini);
-});
-
-
-  // Adicionar ao carrinho + atualizar banco
+  // Botão "Adicionar à Sacola"
   const btnAdicionar = document.getElementById('btn-adicionar-sacola');
   btnAdicionar.onclick = async () => {
     const quantidade = parseInt(quantidadeInput.value);
@@ -144,10 +133,9 @@ fotos.forEach(foto => {
       quantidade: quantidade,
       preco: produto.preco,
       total: (quantidade * produto.preco).toFixed(2),
-      foto: primeiraFoto, // Adicionando foto ao produto
+      foto: fotos[0],
     };
 
-    // Atualiza estoque no banco
     try {
       const resposta = await fetch('http://localhost:3000/atualizar-estoque', {
         method: 'POST',
@@ -170,16 +158,15 @@ fotos.forEach(foto => {
       return;
     }
 
-    // Adiciona ao carrinho
     let sacola = JSON.parse(localStorage.getItem('sacola')) || [];
     sacola.push(produtoCarrinho);
     localStorage.setItem('sacola', JSON.stringify(sacola));
 
+    atualizarContadorSacola();
     fecharModalProduto();
     carregarProdutos(produto.categoria);
   };
 }
-
 
 // Função para fechar o modal
 function fecharModalProduto() {
@@ -189,3 +176,72 @@ function fecharModalProduto() {
 // Botões de fechar modal
 document.getElementById('btn-cancelar-modal').onclick = fecharModalProduto;
 document.getElementById('btn-fechar-modal').onclick = fecharModalProduto;
+
+// Função para atualizar o contador da sacola
+function atualizarContadorSacola() {
+  const sacola = JSON.parse(localStorage.getItem('sacola')) || [];
+  const totalItens = sacola.reduce((soma, item) => soma + item.quantidade, 0);
+
+  const contadorSacola = document.getElementById('contador-sacola');
+  if (totalItens > 0) {
+    contadorSacola.textContent = totalItens;
+    contadorSacola.style.display = 'inline-block';
+  } else {
+    contadorSacola.style.display = 'none';
+  }
+}
+
+// Função para remover item da sacola por ID
+function removerItemSacola(idProduto) {
+  let sacola = JSON.parse(localStorage.getItem('sacola')) || [];
+  sacola = sacola.filter(item => item.id !== idProduto);
+  localStorage.setItem('sacola', JSON.stringify(sacola));
+  atualizarContadorSacola();
+  carregarSacola();
+}
+
+// Função para esvaziar a sacola
+function esvaziarSacola() {
+  localStorage.removeItem('sacola');
+  atualizarContadorSacola();
+  carregarSacola();
+}
+
+// Função para carregar os itens da sacola na interface
+function carregarSacola() {
+  const sacola = JSON.parse(localStorage.getItem('sacola')) || [];
+  const containerSacola = document.getElementById('container-sacola');
+
+  containerSacola.innerHTML = '';
+
+  sacola.forEach(item => {
+    const itemDiv = document.createElement('div');
+    itemDiv.classList.add('item-sacola');
+
+    const nomeItem = document.createElement('p');
+    nomeItem.textContent = `${item.nome} - ${item.cor} - ${item.tamanho}`;
+    itemDiv.appendChild(nomeItem);
+
+    const precoItem = document.createElement('p');
+    precoItem.textContent = `R$ ${item.preco}`;
+    itemDiv.appendChild(precoItem);
+
+    const quantidadeItem = document.createElement('p');
+    quantidadeItem.textContent = `Quantidade: ${item.quantidade}`;
+    itemDiv.appendChild(quantidadeItem);
+
+    const removerButton = document.createElement('button');
+    removerButton.textContent = 'Remover';
+    removerButton.addEventListener('click', () => {
+      removerItemSacola(item.id);
+    });
+
+    itemDiv.appendChild(removerButton);
+    containerSacola.appendChild(itemDiv);
+  });
+
+  atualizarContadorSacola();
+}
+
+// Atualiza o contador ao carregar a página
+document.addEventListener('DOMContentLoaded', atualizarContadorSacola);

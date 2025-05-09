@@ -92,6 +92,25 @@
     cursor: pointer;
 }
 
+.icon-sacola-container {
+    position: relative;
+    display: inline-block;
+}
+
+.contador-sacola {
+    position: absolute;
+    top: -5px;
+    right: 6px;
+    background-color: red;
+    color: white;
+    font-family: Arial, sans-serif;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    /*display: none; /* Inicialmente escondido */
+}
+
 /* Modal da sacola */
 .modal-sacola {
     display: none;
@@ -509,6 +528,7 @@
     max-width: 400px;
     border-radius: 10px;
     position: relative;
+    font-family: "Poppins", sans-serif;
     box-shadow: 0 0 15px rgba(0,0,0,0.3);
   }
   
@@ -517,7 +537,7 @@
     position: absolute;
     top: 10px;
     right: 15px;
-    font-size: 24px;
+    font-size: 40px;
     cursor: pointer;
     color: #333;
   }
@@ -607,6 +627,7 @@
     background-color: #f44336;
     color: white;
   }
+
   
 /*----Footer----*/
 .footer {

@@ -127,11 +127,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const sacola = JSON.parse(localStorage.getItem("sacola")) || [];
     const dados = {
       nome_cliente: document.getElementById("nome_cliente").value.trim(),
-      endereco_cliente: document.getElementById("endereco_cliente").value.trim(),
-      bairro_cliente: document.getElementById("bairro_cliente").value.trim(),
-      numero_cliente: document.getElementById("numero_cliente").value.trim(),
-      ponto_referencia: document.getElementById("ponto_referencia").value.trim(),
-      telefone: document.getElementById("telefone_cliente").value.trim(),
+      CEP: document.getElementById("CEP").value.trim(),
+      rua_avenida: document.getElementById("rua_avenida").value.trim(),
+      bairro: document.getElementById("bairro").value.trim(),
+      numero: document.getElementById("numero").value.trim(),
+      complemento: document.getElementById("complemento").value.trim(),
+      telefone: document.getElementById("telefone").value.trim(),
       forma_pagamento: pagamento
     };
     if (sacola.length === 0) return alert("Sacola vazia.");
@@ -148,6 +149,36 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.removeItem("sacola");
     fecharModal();
   });
+
+    // Preencher rua e bairro com base no CEP
+  const inputCEP = document.getElementById("CEP");
+
+  inputCEP.addEventListener("blur", async function () {
+    const cep = this.value.replace(/\D/g, "");
+
+    if (cep.length !== 8) {
+      alert("CEP inválido. Digite exatamente 8 números.");
+      return;
+    }
+
+    try {
+      const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const dados = await resposta.json();
+
+      if (dados.erro) {
+        alert("CEP não encontrado.");
+        return;
+      }
+
+      document.getElementById("rua_avenida").value = dados.logradouro || "";
+      document.getElementById("bairro").value = dados.bairro || "";
+
+    } catch (erro) {
+      alert("Erro ao buscar o CEP.");
+      console.error(erro);
+    }
+  });
+
 
   // Inicialização
   renderizarSacola();

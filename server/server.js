@@ -109,9 +109,9 @@ app.post('/atualizar-estoque', (req, res) => {
 app.post('/pedidos', (req, res) => {
     const {
         foto, nome, cor, tamanho, preco, quantidade,
-        nome_cliente, endereco_cliente, bairro_cliente,
-        numero_cliente, pronto_referencia, telefone,
-        forma_pagamento // <-- Novo campo
+        nome_cliente, CEP, rua_avenida, bairro,
+        numero, complemento, telefone,
+        forma_pagamento 
     } = req.body;
 
     const preco_total = preco * quantidade;
@@ -119,17 +119,17 @@ app.post('/pedidos', (req, res) => {
     const sql = `
       INSERT INTO pedidos (
         foto, nome, cor, tamanho, preco_total, quantidade,
-        nome_cliente, endereco_cliente, bairro_cliente,
-        numero_cliente, pronto_referencia, telefone,
+        nome_cliente, CEP, rua_avenida, bairro,
+        numero, complemento, telefone,
         forma_pagamento
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const valores = [
         foto, nome, cor, tamanho, preco_total, quantidade,
-        nome_cliente, endereco_cliente, bairro_cliente,
-        numero_cliente, pronto_referencia, telefone,
+        nome_cliente, CEP, rua_avenida, bairro,
+        numero, complemento, telefone,
         forma_pagamento
     ];
 
