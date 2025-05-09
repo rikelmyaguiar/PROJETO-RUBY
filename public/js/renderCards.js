@@ -20,8 +20,13 @@ async function carregarProdutos(categoria) {
       img.alt = produto.nome;
       img.classList.add('card-imagem');
 
+      // Adiciona o bloqueio de abrir o modal na foto caso o produto esteja esgotado
       img.addEventListener('click', () => {
-        abrirModalProduto(produto);
+        if (produto.quantidade > 0) {
+          abrirModalProduto(produto);
+        } else {
+          console.log('Produto esgotado, não é possível abrir o modal.');
+        }
       });
 
       const nome = document.createElement('h3');
