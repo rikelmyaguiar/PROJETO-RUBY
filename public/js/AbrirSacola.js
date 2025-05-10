@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnEnviar = document.getElementById("btn-enviar-pedido");
   const btnCancelarFormulario = document.getElementById("btn-cancelar-formulario");
 
+  // Alerta de pagamento
+  const alertPagamento = document.getElementById("AlertPagamento");
+
   function abrirModal() {
     modal.style.display = "block";
     setTimeout(() => modal.style.right = "0", 10);
@@ -104,6 +107,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Exibe opções de pagamento e formulário
   botaoFinalizar.addEventListener("click", () => {
+    const pagamentoSel = document.querySelector("input[name='pagamento']:checked");
+    if (!pagamentoSel) {
+      // Exibe o alerta
+      alertPagamento.style.display = 'block';
+      alertPagamento.classList.add('show');
+      setTimeout(() => {
+        alertPagamento.classList.remove('show');
+        alertPagamento.style.display = 'none';
+      }, 3000); // O alerta desaparecerá após 3 segundos
+      return; // Impede o prosseguimento se não houver forma de pagamento selecionada
+    }
+
     opcaoPagamento.style.display = "block";
     formCliente.style.display = "block";
     botaoFinalizar.style.display = "none";
@@ -150,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fecharModal();
   });
 
-    // Preencher rua e bairro com base no CEP
+  // Preencher rua e bairro com base no CEP
   const inputCEP = document.getElementById("CEP");
 
   inputCEP.addEventListener("blur", async function () {
@@ -178,7 +193,6 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error(erro);
     }
   });
-
 
   // Inicialização
   renderizarSacola();

@@ -168,10 +168,23 @@ function abrirModalProduto(produto) {
     localStorage.setItem('sacola', JSON.stringify(sacola));
 
     atualizarContadorSacola();
+
+    // Exibir o alert estilizado
+    const alertElement = document.getElementById('customAlert');
+    alertElement.style.display = 'block';
+    alertElement.classList.add('show');
+
+    // Remover o alert após 3 segundos
+    setTimeout(() => {
+      alertElement.classList.remove('show');
+      alertElement.style.display = 'none';
+    }, 3000);
+
     fecharModalProduto();
     carregarProdutos(produto.categoria);
   };
 }
+
 
 // Função para fechar o modal
 function fecharModalProduto() {

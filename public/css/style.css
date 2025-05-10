@@ -314,8 +314,6 @@
   #opcao-pagamento input[type="radio"] {
     margin-right: 4px;
   }
-  
-
 
 
 /* Navbar */
@@ -627,6 +625,61 @@
     background-color: #f44336;
     color: white;
   }
+
+.custom-alert {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #28a745;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  padding: 15px 30px;
+  border-radius: 5px;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-alert.show {
+  opacity: 1;
+}
+
+.alert-pagamento {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #dc3545;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  padding: 15px 30px;
+  border-radius: 5px;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+
+.alert-pagamento.show {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .alert-pagamento {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .alert-pagamento {
+    padding: 8px 15px;
+    font-size: 12px;
+  }
+}
 
   
 /*----Footer----*/
