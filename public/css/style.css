@@ -315,6 +315,13 @@
     margin-right: 4px;
   }
 
+.erro-campo {
+  color: red;
+  font-size: 0.85em;
+  margin: 1px 0 1px 0;
+  display: block;
+}
+
 
 /* Navbar */
 .navbar {
