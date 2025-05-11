@@ -177,29 +177,8 @@ if (!mensagemErro) {
       preco: produto.preco,
       total: (quantidade * produto.preco).toFixed(2),
       foto: fotos[0],
+      categoria: produto.categoria
     };
-
-    try {
-      const resposta = await fetch("http://localhost:3000/atualizar-estoque", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: produto.id,
-          categoria: produto.categoria,
-          quantidade,
-        }),
-      });
-
-      const resultado = await resposta.json();
-      if (!resposta.ok || !resultado.sucesso) {
-        alert(resultado.erro || "Erro ao atualizar o estoque.");
-        return;
-      }
-    } catch (erro) {
-      console.error("Erro ao comunicar com o servidor:", erro);
-      alert("Erro ao comunicar com o servidor.");
-      return;
-    }
 
     let sacola = JSON.parse(localStorage.getItem("sacola")) || [];
     sacola.push(produtoCarrinho);

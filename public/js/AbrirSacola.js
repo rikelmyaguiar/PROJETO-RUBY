@@ -10,12 +10,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const formCliente = document.getElementById("formulario-cliente");
   const btnEnviar = document.getElementById("btn-enviar-pedido");
   const btnCancelarFormulario = document.getElementById("btn-cancelar-formulario");
-
-  // Alerta de pagamento
   const alertPagamento = document.getElementById("AlertPagamento");
-
-  // Modal de Sucesso
   const modalSucesso = document.getElementById("modal-pedido-enviado");
+
+  // NOVOS elementos para modal de confirmação
+  const modalConfirmar = document.getElementById("modal-confirmar-pedido");
+  const btnConfirmarPedido = document.getElementById("btn-confirmar-pedido");
+  const btnCancelarPedido = document.getElementById("btn-cancelar-pedido");
 
   function abrirModal() {
     modal.style.display = "block";
@@ -108,18 +109,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Exibe opções de pagamento e formulário
   botaoFinalizar.addEventListener("click", () => {
     const pagamentoSel = document.querySelector("input[name='pagamento']:checked");
     if (!pagamentoSel) {
-      // Exibe o alerta
       alertPagamento.style.display = 'block';
       alertPagamento.classList.add('show');
       setTimeout(() => {
         alertPagamento.classList.remove('show');
         alertPagamento.style.display = 'none';
-      }, 3000); // O alerta desaparecerá após 3 segundos
-      return; // Impede o prosseguimento se não houver forma de pagamento selecionada
+      }, 3000);
+      return;
     }
 
     opcaoPagamento.style.display = "block";
@@ -128,7 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
     botaoEsvaziar.style.display = "none";
   });
 
-  // Cancelar finalização
   btnCancelarFormulario.addEventListener("click", () => {
     formCliente.style.display = "none";
     opcaoPagamento.style.display = "block";
@@ -137,35 +135,16 @@ document.addEventListener("DOMContentLoaded", function () {
     renderizarSacola();
   });
 
-  // Enviar pedido
-  btnEnviar.addEventListener("click", async () => {
-    const pagamentoSel = document.querySelector("input[name='pagamento']:checked");
-    if (!pagamentoSel) return alert("Escolha forma de pagamento.");
-    const pagamento = pagamentoSel.value;
-    const sacola = JSON.parse(localStorage.getItem("sacola")) || [];
-
-    // Campos obrigatórios (CEP removido)
-    const camposObrigatorios = [
-      "nome_cliente",
-      "rua_avenida",
-      "bairro",
-      "numero",
-      "telefone"
-    ];
-
-    // Remover mensagens de erro anteriores
+  btnEnviar.addEventListener("click", () => {
     document.querySelectorAll(".erro-campo").forEach(e => e.remove());
 
-    let formularioValido = true;
+    const camposObrigatorios = ["nome_cliente", "rua_avenida", "bairro", "numero", "telefone"];
+    let valido = true;
 
-    // Validação dos campos obrigatórios
     camposObrigatorios.forEach(id => {
       const campo = document.getElementById(id);
-      const valor = campo.value.trim();
-
-      if (!valor) {
-        formularioValido = false;
-
+      if (!campo.value.trim()) {
+        valido = false;
         const erro = document.createElement("span");
         erro.className = "erro-campo";
         erro.style.color = "red";
@@ -175,85 +154,102 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Validação do telefone
     const telefone = document.getElementById("telefone").value.trim();
-    const telefoneRegex = /^[0-9]{10,11}$/;
-    if (telefone && !telefoneRegex.test(telefone)) {
-      formularioValido = false;
-
-      const campoTelefone = document.getElementById("telefone");
+    if (telefone && !/^[0-9]{10,11}$/.test(telefone)) {
+      valido = false;
       const erro = document.createElement("span");
       erro.className = "erro-campo";
       erro.style.color = "red";
       erro.style.fontSize = "12px";
       erro.textContent = "Telefone inválido. Digite 10 ou 11 números.";
-      campoTelefone.insertAdjacentElement("afterend", erro);
+      document.getElementById("telefone").insertAdjacentElement("afterend", erro);
     }
 
-    // Validação do CEP se preenchido
-    const campoCEP = document.getElementById("CEP");
-    const cep = campoCEP.value.trim();
-
-    // Remove erro anterior de CEP, se houver
-    document.querySelectorAll(".erro-campo").forEach(e => {
-      if (e.previousElementSibling?.id === "CEP") e.remove();
-    });
-
+    const cep = document.getElementById("CEP").value.trim();
     if (cep && !/^\d{8}$/.test(cep)) {
-      formularioValido = false;
-
+      valido = false;
       const erro = document.createElement("span");
       erro.className = "erro-campo";
       erro.style.color = "red";
       erro.style.fontSize = "12px";
       erro.textContent = "CEP inválido. Digite exatamente 8 números.";
-      campoCEP.insertAdjacentElement("afterend", erro);
+      document.getElementById("CEP").insertAdjacentElement("afterend", erro);
     }
 
-    if (!formularioValido) return; // Interrompe envio se houver campos inválidos
+    const sacola = JSON.parse(localStorage.getItem("sacola")) || [];
+    const pagamentoSel = document.querySelector("input[name='pagamento']:checked");
+    if (!valido || !pagamentoSel || sacola.length === 0) return;
 
-    if (sacola.length === 0) return alert("Sacola vazia.");
+    // Abre o modal de confirmação
+    modalConfirmar.style.display = "flex";
 
-    const dados = {
-      nome_cliente: document.getElementById("nome_cliente").value.trim(),
-      CEP: document.getElementById("CEP").value.trim(),
-      rua_avenida: document.getElementById("rua_avenida").value.trim(),
-      bairro: document.getElementById("bairro").value.trim(),
-      numero: document.getElementById("numero").value.trim(),
-      complemento: document.getElementById("complemento").value.trim(),
-      telefone: telefone,
-      forma_pagamento: pagamento
-    };
+    // Lógica do botão "Sim"
+btnConfirmarPedido.onclick = async () => {
+  const dados = {
+    nome_cliente: document.getElementById("nome_cliente").value.trim(),
+    CEP: cep,
+    rua_avenida: document.getElementById("rua_avenida").value.trim(),
+    bairro: document.getElementById("bairro").value.trim(),
+    numero: document.getElementById("numero").value.trim(),
+    complemento: document.getElementById("complemento").value.trim(),
+    telefone: telefone,
+    forma_pagamento: pagamentoSel.value
+  };
 
-    for (const prod of sacola) {
-      const pedido = { ...prod, ...dados };
-      const res = await fetch("/pedidos", {
+  for (const prod of sacola) {
+    const pedido = { ...prod, ...dados };
+    const res = await fetch("/pedidos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pedido)
+    });
+    if (!res.ok) return alert("Erro ao enviar.");
+  }
+
+  // Atualizar estoque no backend
+  for (const item of sacola) {
+    try {
+      const respostaEstoque = await fetch("http://localhost:3000/atualizar-estoque", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(pedido)
+        body: JSON.stringify({
+          id: item.id,
+          categoria: item.categoria || "",
+          quantidade: item.quantidade
+        }),
       });
-      if (!res.ok) return alert("Erro ao enviar.");
+
+      const resultadoEstoque = await respostaEstoque.json();
+      if (!respostaEstoque.ok || !resultadoEstoque.sucesso) {
+        console.warn(`Erro ao atualizar estoque do produto ${item.id}`);
+      }
+    } catch (erro) {
+      console.error(`Erro ao atualizar estoque do produto ${item.id}:`, erro);
     }
+  }
 
-    // Exibe o modal de sucesso
-    modalSucesso.style.display = "flex";
+  modalConfirmar.style.display = "none";
+  modalSucesso.style.display = "flex";
 
-    // Esconde o modal de sucesso após 3 segundos
-    setTimeout(() => {
-      modalSucesso.style.display = "none";
-    }, 3000);
-
-    localStorage.removeItem("sacola");
+  setTimeout(() => {
+    modalSucesso.style.display = "none";
     fecharModal();
+    formCliente.style.display = "none";
+  }, 3000);
+
+  localStorage.removeItem("sacola");
+};
+
+
+    // Lógica do botão "Não"
+    btnCancelarPedido.onclick = () => {
+      modalConfirmar.style.display = "none";
+    };
   });
 
-  // Preencher rua e bairro com base no CEP (sem alertas)
   const inputCEP = document.getElementById("CEP");
-
   inputCEP.addEventListener("blur", async function () {
     const cep = this.value.replace(/\D/g, "");
-
-    // Remove mensagem de erro anterior, se houver
     document.querySelectorAll(".erro-campo").forEach(e => {
       if (e.previousElementSibling?.id === "CEP") e.remove();
     });
@@ -271,11 +267,6 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
       const dados = await resposta.json();
-
-      // Remove erro anterior se houver
-      document.querySelectorAll(".erro-campo").forEach(e => {
-        if (e.previousElementSibling?.id === "CEP") e.remove();
-      });
 
       if (dados.erro) {
         const erro = document.createElement("span");
@@ -301,6 +292,5 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Inicialização
   renderizarSacola();
 });
