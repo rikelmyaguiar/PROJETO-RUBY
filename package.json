@@ -3,7 +3,8 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "mysql": "^2.18.1",
-    "mysql2": "^3.12.0"
+    "mysql2": "^3.12.0",
+    "uuid": "^11.1.0"
   },
   "name": "projeto-ruby",
   "version": "1.0.0",
