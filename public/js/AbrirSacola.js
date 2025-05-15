@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnCancelarFormulario = document.getElementById("btn-cancelar-formulario");
   const alertPagamento = document.getElementById("AlertPagamento");
   const modalSucesso = document.getElementById("modal-pedido-enviado");
-
-  // NOVOS elementos para modal de confirmação
   const modalConfirmar = document.getElementById("modal-confirmar-pedido");
   const btnConfirmarPedido = document.getElementById("btn-confirmar-pedido");
   const btnCancelarPedido = document.getElementById("btn-cancelar-pedido");
@@ -98,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
         renderizarSacola();
       });
     });
+
     document.querySelectorAll(".remover-produto").forEach(btn => {
       btn.addEventListener("click", e => {
         const idx = e.target.dataset.index;
@@ -180,72 +179,80 @@ document.addEventListener("DOMContentLoaded", function () {
     const pagamentoSel = document.querySelector("input[name='pagamento']:checked");
     if (!valido || !pagamentoSel || sacola.length === 0) return;
 
-    // Abre o modal de confirmação
     modalConfirmar.style.display = "flex";
+  });
 
-    // Lógica do botão "Sim"
-btnConfirmarPedido.onclick = async () => {
-  const dados = {
-    nome_cliente: document.getElementById("nome_cliente").value.trim(),
-    CEP: cep,
-    rua_avenida: document.getElementById("rua_avenida").value.trim(),
-    bairro: document.getElementById("bairro").value.trim(),
-    numero: document.getElementById("numero").value.trim(),
-    complemento: document.getElementById("complemento").value.trim(),
-    telefone: telefone,
-    forma_pagamento: pagamentoSel.value
-  };
+  btnConfirmarPedido.onclick = async () => {
+    const sacola = JSON.parse(localStorage.getItem("sacola")) || [];
+    const pagamentoSel = document.querySelector("input[name='pagamento']:checked");
+    const pedidoId = Math.floor(Math.random() * 900000 + 100000).toString();
 
-  for (const prod of sacola) {
-    const pedido = { ...prod, ...dados };
-    const res = await fetch("/pedidos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(pedido)
-    });
-    if (!res.ok) return alert("Erro ao enviar.");
-  }
+    const dados = {
+      nome_cliente: document.getElementById("nome_cliente").value.trim(),
+      CEP: document.getElementById("CEP").value.trim(),
+      rua_avenida: document.getElementById("rua_avenida").value.trim(),
+      bairro: document.getElementById("bairro").value.trim(),
+      numero: document.getElementById("numero").value.trim(),
+      complemento: document.getElementById("complemento").value.trim(),
+      telefone: document.getElementById("telefone").value.trim(),
+      forma_pagamento: pagamentoSel.value
+    };
 
-  // Atualizar estoque no backend
-  for (const item of sacola) {
-    try {
-      const respostaEstoque = await fetch("http://localhost:3000/atualizar-estoque", {
+    for (const prod of sacola) {
+      const pedido = {
+        pedidoId,
+        ...prod,
+        ...dados
+      };
+
+      const res = await fetch("/pedidos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: item.id,
-          categoria: item.categoria || "",
-          quantidade: item.quantidade
-        }),
+        body: JSON.stringify(pedido)
       });
 
-      const resultadoEstoque = await respostaEstoque.json();
-      if (!respostaEstoque.ok || !resultadoEstoque.sucesso) {
-        console.warn(`Erro ao atualizar estoque do produto ${item.id}`);
+      if (!res.ok) {
+        alert("Erro ao enviar pedido.");
+        return;
       }
-    } catch (erro) {
-      console.error(`Erro ao atualizar estoque do produto ${item.id}:`, erro);
     }
-  }
 
-  modalConfirmar.style.display = "none";
-  modalSucesso.style.display = "flex";
+    for (const item of sacola) {
+      try {
+        const respostaEstoque = await fetch("http://localhost:3000/atualizar-estoque", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: item.id,
+            categoria: item.categoria || "",
+            quantidade: item.quantidade
+          }),
+        });
 
-  setTimeout(() => {
-    modalSucesso.style.display = "none";
-    fecharModal();
-    formCliente.style.display = "none";
-  }, 3000);
+        const resultadoEstoque = await respostaEstoque.json();
+        if (!respostaEstoque.ok || !resultadoEstoque.sucesso) {
+          console.warn(`Erro ao atualizar estoque do produto ${item.id}`);
+        }
+      } catch (erro) {
+        console.error(`Erro ao atualizar estoque do produto ${item.id}:`, erro);
+      }
+    }
 
-  localStorage.removeItem("sacola");
-};
+    modalConfirmar.style.display = "none";
+    modalSucesso.style.display = "flex";
 
+    setTimeout(() => {
+      modalSucesso.style.display = "none";
+      fecharModal();
+      formCliente.style.display = "none";
+    }, 3000);
 
-    // Lógica do botão "Não"
-    btnCancelarPedido.onclick = () => {
-      modalConfirmar.style.display = "none";
-    };
-  });
+    localStorage.removeItem("sacola");
+  };
+
+  btnCancelarPedido.onclick = () => {
+    modalConfirmar.style.display = "none";
+  };
 
   const inputCEP = document.getElementById("CEP");
   inputCEP.addEventListener("blur", async function () {

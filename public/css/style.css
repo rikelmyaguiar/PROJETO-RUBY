@@ -732,30 +732,10 @@
   }
 }
 
-.meus-pedidos-container {
-    padding: 20px;
-    background-color: #f4f4f4;
-}
 
-.aviso {
-    display: none; /* Inicialmente escondido */
-    color: #ff6b6b;
-    font-size: 18px;
-    text-align: center;
-}
 
-.pedidos-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
 
-.pedido-card {
-    background-color: #fff;
-    border-radius: 5px;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+
 
 
   

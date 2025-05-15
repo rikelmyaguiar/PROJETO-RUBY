@@ -108,7 +108,7 @@ app.post('/atualizar-estoque', (req, res) => {
 // Rota para inserir um novo pedido
 app.post('/pedidos', (req, res) => {
     const {
-        foto, nome, cor, tamanho, preco, quantidade,
+        pedidoId, foto, nome, cor, tamanho, preco, quantidade,
         nome_cliente, CEP, rua_avenida, bairro,
         numero, complemento, telefone,
         forma_pagamento 
@@ -118,16 +118,16 @@ app.post('/pedidos', (req, res) => {
 
     const sql = `
       INSERT INTO pedidos (
-        foto, nome, cor, tamanho, preco_total, quantidade,
+        pedidoId, foto, nome, cor, tamanho, preco_total, quantidade,
         nome_cliente, CEP, rua_avenida, bairro,
         numero, complemento, telefone,
         forma_pagamento
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const valores = [
-        foto, nome, cor, tamanho, preco_total, quantidade,
+        pedidoId, foto, nome, cor, tamanho, preco_total, quantidade,
         nome_cliente, CEP, rua_avenida, bairro,
         numero, complemento, telefone,
         forma_pagamento

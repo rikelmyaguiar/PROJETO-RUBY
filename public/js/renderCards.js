@@ -67,7 +67,6 @@ async function carregarProdutos(categoria) {
 }
 
 // Função para abrir o modal de produto
-// Função para abrir o modal de produto
 function abrirModalProduto(produto) {
   const modal = document.getElementById("modal-produto");
   const imagemPrincipal = document.getElementById("modal-imagem-principal");
