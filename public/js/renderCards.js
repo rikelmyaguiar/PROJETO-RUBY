@@ -33,7 +33,7 @@ async function carregarProdutos(categoria) {
       const nome = document.createElement("h3");
       nome.textContent = produto.nome;
 
-      const preco = document.createElement("p");
+      const preco = document.createElement("span");
       preco.innerHTML = `R$ <span>${produto.preco}</span>`;
 
       const estoque = document.createElement("p");
@@ -46,7 +46,7 @@ async function carregarProdutos(categoria) {
       }
 
       const button = document.createElement("button");
-      button.textContent = "ADICIONAR";
+      button.textContent = "COMPRAR";
       button.disabled = produto.quantidade === 0;
 
       button.addEventListener("click", (e) => {
