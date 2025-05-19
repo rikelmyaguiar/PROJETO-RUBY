@@ -201,7 +201,6 @@ if (!mensagemErro) {
 }
 
 
-
 // Função para fechar o modal
 function fecharModalProduto() {
   document.getElementById("modal-produto").classList.add("hidden");
@@ -225,57 +224,10 @@ function atualizarContadorSacola() {
   }
 }
 
-// Função para remover item da sacola por ID
-function removerItemSacola(idProduto) {
-  let sacola = JSON.parse(localStorage.getItem("sacola")) || [];
-  sacola = sacola.filter((item) => item.id !== idProduto);
-  localStorage.setItem("sacola", JSON.stringify(sacola));
-  atualizarContadorSacola();
-  carregarSacola();
-}
 
-// Função para esvaziar a sacola
-function esvaziarSacola() {
-  localStorage.removeItem("sacola");
-  atualizarContadorSacola();
-  carregarSacola();
-}
+// Atualiza o contador imediatamente ao carregar
+atualizarContadorSacola();
 
-// Função para carregar os itens da sacola na interface
-function carregarSacola() {
-  const sacola = JSON.parse(localStorage.getItem("sacola")) || [];
-  const containerSacola = document.getElementById("container-sacola");
+// E continua atualizando a cada 500ms (meio segundo)
+setInterval(atualizarContadorSacola, 500);
 
-  containerSacola.innerHTML = "";
-
-  sacola.forEach((item) => {
-    const itemDiv = document.createElement("div");
-    itemDiv.classList.add("item-sacola");
-
-    const nomeItem = document.createElement("p");
-    nomeItem.textContent = `${item.nome} - ${item.cor} - ${item.tamanho}`;
-    itemDiv.appendChild(nomeItem);
-
-    const precoItem = document.createElement("p");
-    precoItem.textContent = `R$ ${item.preco}`;
-    itemDiv.appendChild(precoItem);
-
-    const quantidadeItem = document.createElement("p");
-    quantidadeItem.textContent = `Quantidade: ${item.quantidade}`;
-    itemDiv.appendChild(quantidadeItem);
-
-    const removerButton = document.createElement("button");
-    removerButton.textContent = "Remover";
-    removerButton.addEventListener("click", () => {
-      removerItemSacola(item.id);
-    });
-
-    itemDiv.appendChild(removerButton);
-    containerSacola.appendChild(itemDiv);
-  });
-
-  atualizarContadorSacola();
-}
-
-// Atualiza o contador ao carregar a página
-document.addEventListener("DOMContentLoaded", atualizarContadorSacola);
