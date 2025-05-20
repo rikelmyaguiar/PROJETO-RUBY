@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return `R$ ${numero.toFixed(2).replace('.', ',')}`;
   }
 
-  function renderizarSacola() {
+  async function renderizarSacola() {
     const sacola = JSON.parse(localStorage.getItem("sacola")) || [];
     sacolaItens.innerHTML = "";
 
@@ -56,26 +56,45 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     let total = 0;
-    sacola.forEach((produto, index) => {
+
+    for (const [index, produto] of sacola.entries()) {
+      let estoqueAtual = null;
+      try {
+        const res = await fetch(`http://localhost:3000/produtos/${produto.categoria}`);
+        const produtosDaCategoria = await res.json();
+
+        const produtoAtual = produtosDaCategoria.find(p => p.id === produto.id);
+        estoqueAtual = produtoAtual ? produtoAtual.quantidade : 0;
+      } catch (e) {
+        console.error("Erro ao buscar quantidade do produto:", e);
+        estoqueAtual = 0;
+      }
+
+
       const item = document.createElement("div");
       item.classList.add("sacola-item");
       const subtotal = produto.preco * produto.quantidade;
       total += subtotal;
+
       item.innerHTML = `
         <img src="${produto.foto}" alt="${produto.nome}">
         <div class="sacola-detalhes">
           <p><strong>${produto.nome}</strong></p>
           <p>Cor: ${produto.cor} | Tamanho: ${produto.tamanho}</p>
           <p>Preço: ${formatarPreco(produto.preco)}</p>
-          <label>Qtd:
-            <input type="number" class="quantidade-input" value="${produto.quantidade}" min="1" data-index="${index}">
-          </label>
+          <div class="quantidade-wrapper">
+            <label>Qtd:
+              <input type="number" class="quantidade-input" value="${produto.quantidade}" min="1" data-index="${index}" data-estoque="${estoqueAtual}">
+            </label>
+            <div class="mensagem-erro" style="color: red; font-size: 12px; margin-top: 4px; display: none;"></div>
+          </div>
           <p>Subtotal: ${formatarPreco(subtotal)}</p>
           <button class="remover-produto" data-index="${index}">Remover</button>
         </div>
       `;
+
       sacolaItens.appendChild(item);
-    });
+    }
 
     totalSacola.textContent = formatarPreco(total);
     adicionarListeners();
@@ -86,27 +105,42 @@ document.addEventListener("DOMContentLoaded", function () {
     formCliente.style.display = "none";
   }
 
-  function adicionarListeners() {
-    document.querySelectorAll(".quantidade-input").forEach(input => {
-      input.addEventListener("change", e => {
-        const idx = e.target.dataset.index;
-        const sacola = JSON.parse(localStorage.getItem("sacola")) || [];
-        sacola[idx].quantidade = parseInt(e.target.value) || 1;
-        localStorage.setItem("sacola", JSON.stringify(sacola));
-        renderizarSacola();
-      });
-    });
+function adicionarListeners() {
+  document.querySelectorAll(".quantidade-input").forEach(input => {
+    input.addEventListener("change", e => {
+      const idx = e.target.dataset.index;
+      const estoque = parseInt(e.target.dataset.estoque);
+      const novaQtd = parseInt(e.target.value);
+      const sacola = JSON.parse(localStorage.getItem("sacola")) || [];
 
-    document.querySelectorAll(".remover-produto").forEach(btn => {
-      btn.addEventListener("click", e => {
-        const idx = e.target.dataset.index;
-        const sacola = JSON.parse(localStorage.getItem("sacola")) || [];
-        sacola.splice(idx, 1);
+      // Captura a div.mensagem-erro correta
+      const erroDiv = e.target.closest(".quantidade-wrapper").querySelector(".mensagem-erro");
+
+      if (novaQtd > estoque) {
+        erroDiv.textContent = `Quantidade indisponível em estoque (máx. ${estoque}).`;
+        erroDiv.style.display = "block";
+        e.target.value = sacola[idx].quantidade;
+      } else {
+        erroDiv.textContent = "";
+        erroDiv.style.display = "none";
+        sacola[idx].quantidade = novaQtd;
         localStorage.setItem("sacola", JSON.stringify(sacola));
         renderizarSacola();
-      });
+      }
     });
-  }
+  });
+
+  document.querySelectorAll(".remover-produto").forEach(btn => {
+    btn.addEventListener("click", e => {
+      const idx = e.target.dataset.index;
+      const sacola = JSON.parse(localStorage.getItem("sacola")) || [];
+      sacola.splice(idx, 1);
+      localStorage.setItem("sacola", JSON.stringify(sacola));
+      renderizarSacola();
+    });
+  });
+}
+
 
   botaoFinalizar.addEventListener("click", () => {
     const pagamentoSel = document.querySelector("input[name='pagamento']:checked");
