@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="shortcut icon" href="imagens/icones/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
@@ -143,11 +144,11 @@
 
         <!-- alertas -->
         <div id="customAlert" class="custom-alert" style="display:none;">
-            <p> ✔️​ Produto adicionado à sacola</p>
+            <p><i class="fas fa-check-circle"></i>​ Produto adicionado à sacola</p>
         </div>
 
         <div id="AlertPagamento" class="alert-pagamento" style="display:none;">
-            <p>🚫​ Selecione uma opção de pagamento!</p>
+            <p><i class="fas fa-exclamation-triangle"></i>​ Selecione uma opção de pagamento!</p>
         </div>
 
 
@@ -163,6 +164,7 @@
             <!-- Opção de pagamento -->
             <div style="padding: 20px; font-weight: 500;" id="opcao-pagamento">
                 <p><strong style="font-weight: 600;">Escolha a forma de pagamento:</strong></p>
+                <p><strong style="font-weight: 500; font-size: 15px;">(pagamento na entrega)</strong></p>
                 <label><input type="radio" name="pagamento" value="Pix"> Pix</label><br>
                 <label><input type="radio" name="pagamento" value="Dinheiro"> Dinheiro</label><br>
                 <label><input type="radio" name="pagamento" value="Cartão"> Cartão</label>
@@ -174,7 +176,7 @@
         </div>
 
 
-        <!-- Formulário de Finalização -->
+        <!-- Formulário de Credenciais -->
         <div id="formulario-cliente" style="display: none; padding: 20px;">
             <p><strong>Preencha seus dados para finalizar:</strong></p>
 
