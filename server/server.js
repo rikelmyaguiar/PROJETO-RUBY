@@ -7,7 +7,7 @@ const port = 3000;
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',  // Nenhuma senha
+    password: '',
     database: 'loja_ruby'
 });
 
@@ -20,17 +20,15 @@ connection.connect((err) => {
     console.log('Conexão com o banco de dados realizada com sucesso!');
 });
 
-// Middleware para servir arquivos estáticos (ex: imagens, CSS, JS)
+// Middleware para servir arquivos estáticos
 app.use(express.static('public'));
 
-// Middleware para permitir receber JSON no body das requisições
+// Middleware para receber JSON no body
 app.use(express.json());
 
 // Rota para retornar produtos por categoria
 app.get('/produtos/:categoria', (req, res) => {
     const categoria = req.params.categoria.toLowerCase();
-
-    // Verificar se a categoria existe
     const categoriasValidas = ['ofertas', 'brincos', 'pulseiras', 'braceletes', 'colares', 'aneis'];
 
     if (!categoriasValidas.includes(categoria)) {
@@ -48,19 +46,16 @@ app.get('/produtos/:categoria', (req, res) => {
     });
 });
 
-// Rota para retornar produto pelo ID na categoria
+// Rota para retornar produto por ID
 app.get('/produto/:categoria/:id', (req, res) => {
     const categoria = req.params.categoria.toLowerCase();
     const idProduto = req.params.id;
-
-    // Verificar se a categoria existe
     const categoriasValidas = ['ofertas', 'brincos', 'pulseiras', 'braceletes', 'colares', 'aneis'];
 
     if (!categoriasValidas.includes(categoria)) {
         return res.status(400).json({ error: 'Categoria inválida' });
     }
 
-    // Consultar o produto na tabela da categoria
     const query = `SELECT * FROM ${categoria} WHERE id = ?`;
 
     connection.query(query, [idProduto], (err, results) => {
@@ -71,20 +66,19 @@ app.get('/produto/:categoria/:id', (req, res) => {
         if (results.length === 0) {
             return res.status(404).json({ error: 'Produto não encontrado' });
         }
-        res.json(results[0]); // Retorna o produto encontrado
+        res.json(results[0]);
     });
 });
 
-// Rota para atualizar o estoque após adicionar ao carrinho
+// Rota para atualizar o estoque
 app.post('/atualizar-estoque', (req, res) => {
     const { id, categoria, quantidade } = req.body;
+    const categoriasValidas = ['ofertas', 'brincos', 'pulseiras', 'braceletes', 'colares', 'aneis'];
 
     if (!id || !categoria || !quantidade) {
         return res.status(400).json({ sucesso: false, erro: 'Dados inválidos' });
     }
 
-    // Verifica se a categoria é válida
-    const categoriasValidas = ['ofertas', 'brincos', 'pulseiras', 'braceletes', 'colares', 'aneis'];
     if (!categoriasValidas.includes(categoria.toLowerCase())) {
         return res.status(400).json({ sucesso: false, erro: 'Categoria inválida' });
     }
@@ -111,26 +105,27 @@ app.post('/pedidos', (req, res) => {
         pedidoId, foto, nome, cor, tamanho, preco, quantidade,
         nome_cliente, CEP, rua_avenida, bairro,
         numero, complemento, telefone,
-        forma_pagamento 
+        forma_pagamento
     } = req.body;
 
     const preco_total = preco * quantidade;
+    const status = "pendente"; // novo campo
 
     const sql = `
       INSERT INTO pedidos (
         pedidoId, foto, nome, cor, tamanho, preco_total, quantidade,
         nome_cliente, CEP, rua_avenida, bairro,
         numero, complemento, telefone,
-        forma_pagamento
+        forma_pagamento, status
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const valores = [
         pedidoId, foto, nome, cor, tamanho, preco_total, quantidade,
         nome_cliente, CEP, rua_avenida, bairro,
         numero, complemento, telefone,
-        forma_pagamento
+        forma_pagamento, status
     ];
 
     connection.query(sql, valores, (err, result) => {
@@ -142,6 +137,55 @@ app.post('/pedidos', (req, res) => {
         res.status(201).json({ mensagem: 'Pedido inserido com sucesso.' });
     });
 });
+
+// Rota para listar todos os pedidos
+app.get('/pedidos', (req, res) => {
+    const sql = `SELECT * FROM pedidos ORDER BY id DESC`;
+
+    connection.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar pedidos:', err);
+            return res.status(500).json({ erro: 'Erro ao buscar pedidos.' });
+        }
+
+        res.json({ pedidos: results });
+    });
+});
+
+// Rota para cancelar um pedido (remover todos os itens com o mesmo pedidoId)
+app.delete('/pedidos/:pedidoId', (req, res) => {
+    const pedidoId = req.params.pedidoId;
+
+    const sql = `DELETE FROM pedidos WHERE pedidoId = ?`;
+
+    connection.query(sql, [pedidoId], (err, result) => {
+        if (err) {
+            console.error('Erro ao cancelar pedido:', err);
+            return res.status(500).json({ erro: 'Erro ao cancelar pedido.' });
+        }
+
+        res.json({ mensagem: 'Pedido cancelado com sucesso.' });
+    });
+});
+
+// Rota para atualizar o status de um pedido (ex: marcar como entregue)
+app.put('/pedidos/:pedidoId/status', (req, res) => {
+    const pedidoId = req.params.pedidoId;
+    const { status } = req.body;
+
+    const sql = `UPDATE pedidos SET status = ? WHERE pedidoId = ?`;
+
+    connection.query(sql, [status, pedidoId], (err, result) => {
+        if (err) {
+            console.error('Erro ao atualizar status do pedido:', err);
+            return res.status(500).json({ erro: 'Erro ao atualizar status do pedido.' });
+        }
+
+        res.json({ mensagem: 'Status do pedido atualizado com sucesso.' });
+    });
+});
+
+
 
 
 // Iniciar o servidor

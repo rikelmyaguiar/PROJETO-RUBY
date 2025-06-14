@@ -3,59 +3,110 @@ document.addEventListener("DOMContentLoaded", function () {
     const avisoSemPedidos = document.getElementById("aviso-sem-pedidos");
     const pedidosLista = document.getElementById("pedidos-lista");
 
-    // Função para carregar os pedidos
+    // Verifica se os elementos essenciais existem no DOM
+    if (!pedidosContainer || !avisoSemPedidos || !pedidosLista) {
+        console.error("Elementos da página de pedidos não encontrados.");
+        return;
+    }
+
     function carregarPedidos() {
-        fetch("http://localhost:3000/pedidos")  // Aqui você faz a requisição para buscar os pedidos
+        fetch("http://localhost:3000/pedidos")
             .then(res => {
-                if (!res.ok) {
-                    throw new Error('Erro ao carregar pedidos');
-                }
-                return res.json(); // Converte a resposta em JSON
+                if (!res.ok) throw new Error("Erro ao carregar pedidos");
+                return res.json();
             })
             .then(data => {
-                console.log(data); // Verifique o que vem de volta da API
                 if (data.pedidos && data.pedidos.length > 0) {
-                    // Chama a função para exibir os pedidos na tela
                     renderizarPedidos(data.pedidos);
                 } else {
-                    // Se não houver pedidos, exibe a mensagem de aviso
                     avisoSemPedidos.style.display = "block";
-                    pedidosLista.style.display = "none";
+                    pedidosContainer.style.display = "none";
                 }
             })
             .catch(error => {
-                console.error('Erro ao buscar pedidos:', error);
+                console.error("Erro ao buscar pedidos:", error);
                 avisoSemPedidos.style.display = "block";
-                pedidosLista.style.display = "none";
+                pedidosContainer.style.display = "none";
             });
     }
 
-    // Função para renderizar os pedidos na tela
     function renderizarPedidos(pedidos) {
-        // Exibe o contêiner de pedidos e esconde o aviso
         pedidosContainer.style.display = "block";
         avisoSemPedidos.style.display = "none";
-        pedidosLista.style.display = "block";
+        pedidosLista.innerHTML = '';
 
-        pedidosLista.innerHTML = ''; // Limpa a área antes de adicionar os pedidos
-        pedidos.forEach(pedido => {
-            const pedidoElement = document.createElement("div");
-            pedidoElement.classList.add("pedido");
+        // Agrupar por pedidoId
+        const agrupados = {};
+        pedidos.forEach(p => {
+            if (!agrupados[p.pedidoId]) agrupados[p.pedidoId] = [];
+            agrupados[p.pedidoId].push(p);
+        });
 
-            pedidoElement.innerHTML = `
-                <h3>Pedido ID: ${pedido.pedidoId}</h3>
-                <p><strong>Nome Cliente:</strong> ${pedido.nome_cliente}</p>
-                <p><strong>Status:</strong> ${pedido.status}</p>
-                <p><strong>Preço Total:</strong> R$ ${pedido.preco_total}</p>
-                <p><strong>Forma de pagamento:</strong> ${pedido.forma_pagamento}</p>
-                <p><strong>Endereço:</strong> ${pedido.rua_avenida}, ${pedido.bairro}, ${pedido.CEP}</p>
+        for (const pedidoId in agrupados) {
+            const itens = agrupados[pedidoId];
+            const total = itens.reduce((soma, item) => soma + Number(item.preco_total), 0);
+
+            const div = document.createElement("div");
+            div.classList.add("pedido");
+
+            div.innerHTML = `
+                <h3>Pedido #${pedidoId}</h3>
+                <p><strong>Data:</strong> ${new Date(itens[0].data_pedido).toLocaleString()}</p>
+                <p><strong>Status:</strong> ${itens[0].status || "Pedido logo sairá para a entrega"}</p>
+                <p><strong>Forma de Pagamento:</strong> ${itens[0].forma_pagamento}</p>
+                <div class="itens-pedido">
+                    ${itens.map(item => `
+                        <div class="item-pedido" style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+                            <img src="${item.foto}" alt="${item.nome}" width="70" style="border-radius:4px;">
+                            <p><strong>${item.nome}</strong> (${item.cor}, ${item.tamanho})</p>
+                            <p>Quantidade: ${item.quantidade}</p>
+                            <p>Preço: R$ ${Number(item.preco_total).toFixed(2)}</p>
+                            <button onclick="removerItem(${item.id})">Remover item</button>
+                        </div>
+                    `).join('')}
+                </div>
+                <p><strong>Total do Pedido:</strong> R$ ${total.toFixed(2)}</p>
+                <button onclick="cancelarPedido('${pedidoId}')">Cancelar Pedido</button>
                 <hr>
             `;
 
-            pedidosLista.appendChild(pedidoElement);
-        });
+            pedidosLista.appendChild(div);
+        }
     }
 
-    // Chama a função ao carregar a página
+    // Função para remover item individual
+    window.removerItem = function (id) {
+        if (!confirm("Deseja remover este item do pedido?")) return;
+
+        fetch(`http://localhost:3000/pedidos/item/${id}`, {
+            method: "DELETE"
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.mensagem);
+                carregarPedidos();
+            })
+            .catch(err => {
+                console.error("Erro ao remover item:", err);
+            });
+    }
+
+    // Função para cancelar todo o pedido
+    window.cancelarPedido = function (pedidoId) {
+        if (!confirm("Deseja cancelar todo o pedido?")) return;
+
+        fetch(`http://localhost:3000/pedidos/${pedidoId}`, {
+            method: "DELETE"
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.mensagem);
+                carregarPedidos();
+            })
+            .catch(err => {
+                console.error("Erro ao cancelar pedido:", err);
+            });
+    }
+
     carregarPedidos();
 });

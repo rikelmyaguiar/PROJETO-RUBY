@@ -50,6 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(`Título não encontrado para a categoria: ${categoria}`);
             }
         }
+        
+        window.scrollTo({ top: 0, behavior: 'auto' });
     }
 
     // Adiciona evento de clique nos links do menu
